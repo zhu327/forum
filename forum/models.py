@@ -20,41 +20,18 @@ class Pages(object):
         self.total = count
         self._current = current_page
         self.size = list_rows
+        self.pages = self.total // self.size + (1 if self.total % self.size else 0)
 
-    @property
-    def pages(self):
-        return self.total // self.size + \
-            (1 if self.total % self.size else 0)
-
-    def _first(self):
-        pages = self.pages
-        return (pages == 0) or (self._current < 1) or (self._current > pages)
-
-    @property
-    def offset(self):
-        if self._first():
-            return 0
-        return (self.current - 1) * self.size
-
-    @property
-    def limit(self):
-        if self._first():
-            return 0
-        return self.size
-
-    @property
-    def index(self):
-        if self._first():
-            return 1
-        return self._current
-
-    @property
-    def has_prev(self):
-        return self.index > 1
-
-    @property
-    def has_next(self):
-        return self.index < self.pages
+        if (self.pages == 0) or (self._current < 1) or (self._current > self.pages):
+            self.offset = 0
+            self.limit = 0
+            self.index = 1
+        else:
+            self.offset = (self._current - 1) * self.size
+            self.limit = self.size
+            self.index = self._current
+        self.has_prev = self.index > 1
+        self.has_next = self.index < self.pages
 
 class TopicManager(models.Manager):
     '''
@@ -68,6 +45,7 @@ class TopicManager(models.Manager):
         page = Pages(count, current_page, num)
         query = """SELECT topic.*, 
 author_user.username as author_username, 
+author_user.nickname as author_nickname, 
 author_user.avatar as author_avatar, 
 author_user.id as author_id, 
 author_user.reputation as author_reputation, 
@@ -84,7 +62,76 @@ ORDER BY last_touched DESC, created DESC, last_replied_time DESC, id DESC LIMIT 
             Node._meta.db_table, ForumUser._meta.db_table)).replace('?', '%s')
         args = [page.offset, page.limit]
         return self.raw(query, args), page
-       
+
+    def get_all_topics_by_node_slug(self, num = 36, current_page = 1, node_slug = None):
+        id = Node.objects.only('id').get(slug=node_slug).id
+        count = Topic.objects.filter(node_id=id).count()
+        page = Pages(count, current_page, num)
+        query = """SELECT topic.*, 
+author_user.username as author_username, 
+author_user.nickname as author_nickname, 
+author_user.avatar as author_avatar, 
+author_user.id as author_id, 
+author_user.reputation as author_reputation, 
+node.name as node_name, 
+node.slug as node_slug, 
+last_replied_user.username as last_replied_username, 
+last_replied_user.nickname as last_replied_nickname 
+FROM %s AS topic 
+LEFT JOIN %s AS author_user ON topic.author_id = author_user.id 
+LEFT JOIN %s AS node ON topic.node_id = node.id 
+LEFT JOIN %s AS last_replied_user ON topic.last_replied_by = last_replied_user.id 
+WHERE node.slug = ? 
+ORDER BY last_touched DESC, created DESC, last_replied_time DESC, id DESC LIMIT ?, ?"""
+        query = (query % (Topic._meta.db_table, ForumUser._meta.db_table, \
+            Node._meta.db_table, ForumUser._meta.db_table)).replace('?', '%s')
+        args = [node_slug, page.offset, page.limit]
+        return self.raw(query, args), page
+
+    def get_user_all_topics(self, uid, num = 36, current_page = 1):
+        count = Topic.objects.filter(author_id=uid).count()
+        page = Pages(count, current_page, num)
+        query = """SELECT topic.*, 
+author_user.username as author_username, 
+author_user.nickname as author_nickname, 
+author_user.avatar as author_avatar, 
+author_user.id as author_id, 
+author_user.reputation as author_reputation, 
+node.name as node_name, 
+node.slug as node_slug, 
+last_replied_user.username as last_replied_username, 
+last_replied_user.nickname as last_replied_nickname 
+FROM %s AS topic 
+LEFT JOIN %s AS author_user ON topic.author_id = author_user.id 
+LEFT JOIN %s AS node ON topic.node_id = node.id 
+LEFT JOIN %s AS last_replied_user ON topic.last_replied_by = last_replied_user.id 
+WHERE topic.author_id = ? 
+ORDER BY last_touched DESC, created DESC, last_replied_time DESC, id DESC LIMIT ?, ?"""
+        query = (query % (Topic._meta.db_table, ForumUser._meta.db_table, \
+            Node._meta.db_table, ForumUser._meta.db_table)).replace('?', '%s')
+        args = [uid, page.offset, page.limit]
+        return self.raw(query, args), page
+
+    def get_topic_by_topic_id(self, topic_id):
+        query = """SELECT topic.*, 
+author_user.username as author_username, 
+author_user.nickname as author_nickname, 
+author_user.avatar as author_avatar, 
+author_user.id as author_id, 
+author_user.reputation as author_reputation, 
+node.name as node_name, 
+node.slug as node_slug, 
+last_replied_user.username as last_replied_username, 
+last_replied_user.nickname as last_replied_nickname 
+FROM %s AS topic 
+LEFT JOIN %s AS author_user ON topic.author_id = author_user.id 
+LEFT JOIN %s AS node ON topic.node_id = node.id 
+LEFT JOIN %s AS last_replied_user ON topic.last_replied_by = last_replied_user.id 
+WHERE topic.id = ? """
+        query = (query % (Topic._meta.db_table, ForumUser._meta.db_table, \
+            Node._meta.db_table, ForumUser._meta.db_table)).replace('?', '%s')
+        args = [topic_id]
+        return self.raw(query, args)
 
 class ForumUser(AbstractUser):
     '''
@@ -124,7 +171,6 @@ class Topic(models.Model):
     up_vote = models.IntegerField(null=True, blank=True)
     down_vote = models.IntegerField(null=True, blank=True)
     last_touched = models.DateTimeField(null=True, blank=True)
-
 
     objects = TopicManager()
 
