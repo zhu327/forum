@@ -23,8 +23,8 @@ class Pages(object):
             self.start = (self._current - 1) * self.size
             self.end = self.size + self.start
             self.index = self._current
-        self.has_prev = self.index > 1
-        self.has_next = self.index < self.pages
+        self.prev = self.index - 1 if self.index > 1 else self.index
+        self.next = slef.index + 1 if self.index < self.pages else self.index
 
 
 # 数据库字段类型定义
