@@ -1,3 +1,4 @@
 Django==1.5.2
+Markdown==2.5.2
 MySQL-python==1.2.3
 wsgiref==0.1.2

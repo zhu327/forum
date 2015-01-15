@@ -1,7 +1,7 @@
 # coding: utf-8
 
 '''
-Django模版引擎的自定义过滤器，需要在模版中引用
+Django模板引擎的自定义过滤器，需要在模板中引用
 {% load forum_extras %}
 '''
 
@@ -171,3 +171,8 @@ def email_mosaic(email): # 隐藏email
         email = re.sub(r'[^@]{3}@', '***@', email)
 
     return email
+
+
+@register.simple_tag
+def gen_random(): # 生成随机数用语静态文件，避免静态文件被浏览器缓存
+    return random.random()

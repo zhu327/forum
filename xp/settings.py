@@ -66,7 +66,7 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/' # 在模版中使用{{ STATIC_URL }}获取静态文件路径
+STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -114,9 +114,11 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = ( # F2E中有current_user对象和request对象,这里设置可在模版中使用RquestContext
+TEMPLATE_CONTEXT_PROCESSORS = ( # F2E中有current_user对象和request对象,这里设置可在模板中使用RquestContext
     'django.contrib.auth.context_processors.auth', # user对象等等
     'django.core.context_processors.request', # request对象等等
+    'django.core.context_processors.static', # 在模板中使用{{ STATIC_URL }}获取静态文件路径
+    'forum.context_processors.custom_proc', # 自定义模板上下文处理器
 )
 
 INSTALLED_APPS = (
@@ -163,3 +165,7 @@ LOGGING = {
 }
 
 AUTH_USER_MODEL = 'forum.ForumUser'
+
+LOGIN_URL = '/login/'
+
+RESERVED = ["user", "topic", "home", "setting", "forgot", "login", "logout", "register", "admin"]
