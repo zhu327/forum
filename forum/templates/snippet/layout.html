@@ -132,22 +132,22 @@
                         </li>
                         <li><a href="/u/{% if user.username %}{{ user.username }}{% else %}{{ user.id }}{% endif %}">{{ user.username }}</a></li>
                         <li>
-                            <a href="/setting">
+                            <a href="/setting/">
                                 <span class="octicon octicon-tools"></span>
                             </a>
                         </li>
                         <li>
-                            <a href="/logout">
+                            <a href="/logout/">
                                 <span class="octicon octicon-log-out"></span>
                             </a>
                         </li>
                     {% else %}
                         <li>
-                            <a href="/login">
+                            <a href="/login/">
                                 <span class="octicon octicon-log-in"></span>
                             </a>
                         </li>
-                        <li><a href="/register" class="btn btn-small">注册</a></li>
+                        <li><a href="/register/" class="btn btn-small">注册</a></li>
                     {% endif %}
                 </ul>
             </div>

@@ -1,4 +1,5 @@
 {% extends 'snippet/layout.html' %}
+{% load forum_extras %}
 
 {% block main %}
     <div class="container-box">
@@ -7,6 +8,11 @@
                 <div id="legend">
                     <legend class="">用户信息设置</legend>
                 </div>
+                {% if success_message %}
+                <ul class="alert alert-success">
+                    <li>{{ success_message }}</li>
+                </ul>
+                {% endif %}
                 {{ errors|dump_errors }}
                 <div class="control-group">
                     <!-- Avatar -->
@@ -15,7 +21,7 @@
                         <img src="/static/avatar/b_{% if user.avatar %}{{ user.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
                         <img src="/static/avatar/m_{% if user.avatar %}{{ user.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
                         <img src="/static/avatar/s_{% if user.avatar %}{{ user.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
-                        <a href="/setting/avatar" class="btn btn-block set-avatar-btn">设置头像</a>
+                        <a href="/setting/avatar/" class="btn btn-block set-avatar-btn">设置头像</a>
                     </div>
                 </div>
 
@@ -122,7 +128,7 @@
                     <!-- Button -->
                     <div class="controls">
                         <button class="btn btn-success">保存改动</button>
-                        <a href="/setting/password" class="ml10 btn">设置密码</a>
+                        <a href="/setting/password/" class="ml10 btn">设置密码</a>
                     </div>
                 </div>
             </fieldset>
@@ -134,9 +140,9 @@
 {% block sidebar %}
     <div class="sidenav container-box">
         <ul>
-            <li class="current"><a href="/setting">用户中心</a></li>
-            <li><a href="/setting/avatar">设置头像</a></li>
-            <li><a href="/setting/password">设置密码</a></li>
+            <li class="current"><a href="/setting/">用户中心</a></li>
+            <li><a href="/setting/avatar/">设置头像</a></li>
+            <li><a href="/setting/password/">设置密码</a></li>
             <li><a href="/">返回首页</a></li>
         </ul>
     </div>

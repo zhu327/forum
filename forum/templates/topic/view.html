@@ -151,7 +151,7 @@
         </div>
     </div>
 
-    {% ifequal not replies.page.total 0 %}
+    {% ifnotequal replies.page.total 0 %}
     <div class="topic-reply container-box mt10">
         <div class="ui-header">
             <span>共收到{{ replies.page.total }}条回复</span>
@@ -197,7 +197,7 @@
     <div class="alert mt20 no-replies">
         暂无回复，说出你的观点吧
     </div>
-    {% endifequal %}
+    {% endifnotequal %}
 
     <div class="topic-reply-create container-box mt10">
         {% if user.is_authenticated %}
@@ -218,8 +218,8 @@
                 <span class="title">登录后即可���与回�����������</span>
             </div>
             <div class="ui-content">
-                <a class="btn btn-small mt5 mr10" type="button" href="/login">登录</a>
-                <a class="btn btn-small mt5" type="button" href="/register">注册</a>
+                <a class="btn btn-small mt5 mr10" type="button" href="/login/">登录</a>
+                <a class="btn btn-small mt5" type="button" href="/register/">注册</a>
             </div>
         {% endif %}
     </div>
@@ -253,9 +253,9 @@
     {% else %}
         <div class="login-box container-box">
             <div class="ui-content tc">
-                <a class="btn btn-small mr10" type="button" href="/login">登录</a>
-                <a class="btn btn-small mr10" type="button" href="/register">注册</a>
-                <a class="btn btn-small" type="button" href="/forgot">找回密码</a>
+                <a class="btn btn-small mr10" type="button" href="/login/">登录</a>
+                <a class="btn btn-small mr10" type="button" href="/register/">注册</a>
+                <a class="btn btn-small" type="button" href="/forgot/">找回密码</a>
             </div>
         </div>
     {% endif %}

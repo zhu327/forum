@@ -18,9 +18,5 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^', include(forum.urls)),
+    url(r'^manager/admin/', include(admin.site.urls)),
 )
-
-if settings.DEBUG:
-    urlpatterns += patterns('',
-        url(r'^debug/admin/', include(admin.site.urls)),
-    )

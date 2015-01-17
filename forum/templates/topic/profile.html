@@ -142,7 +142,7 @@
         </div>
         {% endif %}
 
-        {% ifequal not topics.page.total 0 %}
+        {% ifnotequal topics.page.total 0 %}
         <div class="topic-lists container-box mt10">
             <div class="ui-header">
                 <span class="title">主题列表</span>
@@ -190,9 +190,9 @@
                 <a href="/u/{{ user.username }}/topics">›› 查看更多主题</a>
             </div>
         </div>
-        {% endifequal %}
+        {% endifnotequal %}
 
-        {% ifequal not replies.page.total 0 %}
+        {% ifnotequal replies.page.total 0 %}
         <div class="replies-lists container-box mt10">
             <div class="ui-header">
                 <span class="title">回复列表</span>
@@ -215,7 +215,7 @@
                 <a href="/u/{{ user.username }}/replies">›› 查看更多回复</a>
             </div>
         </div>
-        {% endifequal %}
+        {% endifnotequal %}
     </div>
 {% endblock %}
 

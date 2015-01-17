@@ -6,7 +6,7 @@ Django模板引擎的自定义过滤器，需要在模板中引用
 '''
 
 
-import json, re
+import json, re, random
 from datetime import date, datetime
 from django import template
 from markdown import markdown
@@ -28,8 +28,8 @@ def dump_errors(errors): # 显示错误信息
     t = template.Template("""
         {% if errors %}
         <ul class="errors alert alert-error">
-            {% for key, value in errors.items %}
-                <li>{{ value | join:',' }}</li>
+            {% for v in errors.itervalues %}
+                <li>{{ v | join:'，' }}</li>
             {% endfor %}
         </ul>
         {% endif %}
