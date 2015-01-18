@@ -195,7 +195,7 @@ class Topic(models.Model):
     created = models.DateTimeField(null=True, blank=True)
     updated = models.DateTimeField(null=True, blank=True)
     node = models.ForeignKey(Node, null=True, blank=True)
-    author = models.ForeignKey(ForumUser, related_name='topic_author', null=True, blank=True)
+    author = models.ForeignKey(ForumUser, related_name='topic_author', null=True, blank=True) # 设置了related_name后，可不用_set
     reply_count = models.IntegerField(null=True, blank=True)
     last_replied_by = models.ForeignKey(ForumUser, related_name='topic_last', null=True, blank=True)
     last_replied_time = models.DateTimeField(null=True, blank=True)

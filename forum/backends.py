@@ -9,6 +9,7 @@ class EmailAuthBackend(object):
             user = ForumUser.objects.get(email=username)
             if user.check_password(password) and user.is_staff:
                 return user
+            return None
         except ForumUser.DoesNotExist:
             return None
 

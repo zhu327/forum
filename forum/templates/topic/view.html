@@ -135,17 +135,15 @@
         </div>
         <div class="ui-footer">
             {% if not topic_favorited %}
-            <a href="/favorite?topic_id={{ topic.id }}" class="J_topicFavorite" data-type="favorite">加入收藏</a>
+            <a href="/favorite/?topic_id={{ topic.id }}" class="J_topicFavorite" data-type="favorite">加入收藏</a>
             {% else %}
-            <a href="/unfavorite?topic_id={{ topic.id }}" class="J_topicFavorite" data-type="unfavorite">取消收藏</a>
+            <a href="/unfavorite/?topic_id={{ topic.id }}" class="J_topicFavorite" data-type="unfavorite">取消收藏</a>
             {% endif %}
             <a href="#" onclick="window.open('https://twitter.com/intent/tweet?hashtags={{ topic.node_slug }}&text={{ topic.title }}&url=http://{{ request.get_host }}{{ request.get_full_path }}');">Tweet</a>
             <a href="#" onclick="window.open('http://service.weibo.com/share/share.php?url=http://{{ request.get_host }}{{ request.get_full_path }}&title=F2E%20-%20{{ topic.title }}', '_blank', 'width=550, height=370');">新浪微博</a>
-            <a href="/vote?topic_id={{ topic.id }}" class="J_topicVote">喜欢</a>
-            {% if user.is_authenticated %}
-            {% ifequal user.id topic.author_id %}
+            <a href="/vote/?topic_id={{ topic.id }}" class="J_topicVote">喜欢</a>
+            {% if user.is_authenticated and user.id == topic.author_id %}
                 <a href="/t/edit/{{ topic.id }}" class="fr">编辑主题</a>
-            {% endifequal %}
             {% endif %}
             <span class="hits fr mr10">{% if topic.hits %}{{ topic.hits }}{% else %}0{% endif %} 次点击</span>
         </div>

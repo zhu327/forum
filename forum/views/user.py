@@ -107,6 +107,7 @@ def post_forgotpwd(request):
 
     new_password = uuid.uuid1().hex
     user.set_password(new_password)
+    user.updated = timezone.now()
     user.save()
 
     # 给用户发送新密码

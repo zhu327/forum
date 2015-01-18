@@ -69,11 +69,11 @@
             <div class="divider-vertical"></div>
             {% if user.is_authenticated %}
                 {% if notifications_count %}
-                    <a href="/notifications" class="notification-indicator tooltipped downwards contextually-unread" title="{% if user.nickname %}{{ user.nickname }}{% else %}{{ user.nickname }}{% endif %}，你有{{ notifications_count }}条未读提醒，去看看吧">
+                    <a href="/notifications/" class="notification-indicator tooltipped downwards contextually-unread" title="{% if user.nickname %}{{ user.nickname }}{% else %}{{ user.nickname }}{% endif %}，你有{{ notifications_count }}条未读提醒，去看看吧">
                         <span class="mail-status unread"></span>
                     </a>
                 {% else %}
-                    <a href="/notifications" class="notification-indicator tooltipped downwards" title="暂时没有未读提醒">
+                    <a href="/notifications/" class="notification-indicator tooltipped downwards" title="暂时没有未读提醒">
                         <span class="mail-status"></span>
                     </a>
                 {% endif %}

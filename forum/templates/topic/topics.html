@@ -103,7 +103,7 @@
         {% if user.counter.notifications %}
             <div class="alert mt10 mb10">
                 <span>
-                    <a href="/notifications">{% if user.nickname %}{{ user.nickname }}{% else %}{{ user.nickname }}{% endif %}，你有{{ user.counter.notifications }}条未读提醒，去看看吧</a>
+                    <a href="/notifications/">{% if user.nickname %}{{ user.nickname }}{% else %}{{ user.nickname }}{% endif %}，你有{{ user.counter.notifications }}条未读提醒，去看看吧</a>
                 </span>
             </div>
         {% endif %}

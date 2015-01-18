@@ -40,6 +40,15 @@ def dump_errors(errors): # 显示错误信息
 
 
 @register.simple_tag
+def build_uri(uri, param, value): # 给uri添加参数或者修改参数的值
+    regx = re.compile("[\?&](%s=[^\?&]*)" % param)
+    find = regx.search(uri)
+    split = "&" if re.search(r"\?", uri) else "?"
+    if not find: return "%s%s%s=%s" % (uri, split, param, value)
+    return re.sub(find.group(1), "%s=%s" % (param, value), uri)
+
+
+@register.simple_tag
 def pagination(page, uri, list_rows = 10): # 显示分页
     def gen_page_list(current_page = 1, total_page = 1, list_rows = 10):
         if(total_page <= list_rows):
@@ -51,8 +60,8 @@ def pagination(page, uri, list_rows = 10): # 显示分页
         return range(current_page, list_rows + 1)
 
     t = template.Template("""
-        {% if page %}
-        {% ifnotequal page.pages 1 %}
+        {% load forum_extras %} {# 如果要使用自定义tag filter这里也需要加载 #}
+        {% if page and page.pages != 0 and page.pages != 1 %}
             <ul>
                 <li {% ifequal page.index page.prev %}class="disabled"{% endifequal %}><a href="{% build_uri uri 'p' page.prev %}">«</a></li>
                 {% for p in gen_page_list %}
@@ -66,21 +75,11 @@ def pagination(page, uri, list_rows = 10): # 显示分页
                 {% endfor %}
                 <li {% ifequal page.index page.next %}class="disabled"{% endifequal %}><a href="{% build_uri uri 'p' page.next %}">»</a></li>
             </ul>
-        {% endifnotequal %}
         {% endif %}
         """)
     c = template.Context(dict(page = page, uri = uri, gen_page_list = gen_page_list(page.index, page.pages, list_rows)))
 
     return t.render(c)
-
-
-@register.simple_tag
-def build_uri(uri, param, value): # 给uri添加参数或者修改参数的值
-    regx = re.compile("[\?&](%s=[^\?&]*)" % param)
-    find = regx.search(uri)
-    split = "&" if re.search(r"\?", uri) else "?"
-    if not find: return "%s%s%s=%s" % (uri, split, param, value)
-    return re.sub(find.group(1), "%s=%s" % (param, value), uri)
 
 
 @register.filter(name='tojson')
@@ -151,7 +150,7 @@ def content_process(content): #内容处理，把gist，微博图片什么的替
 
 
 @register.filter(name='markdown')
-def markdown(content): # 转为markdown
+def markdown_up(content): # 转为markdown
     if not content:
         return ""
     return markdown(content, extensions = ['codehilite', 'fenced_code', 'mathjax'], safe_mode = 'escape')

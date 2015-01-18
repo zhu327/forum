@@ -16,5 +16,5 @@ def method_splitter(request, *args, **kwargs):
 
 def sendmail(title, content, to):
     msg = EmailMultiAlternatives(title, content, settings.DEFAULT_FROM_EMAIL, [to])
-    msg.attach_alternative(content, "text/html")
+    msg.attach_alternative(content, 'text/html')
     msg.send()
