@@ -17,6 +17,11 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+    url(r'^node/(.*)/$', common.method_splitter, {'GET': topic.get_node_topics}),
+    url(r'^u/(.*)/topics/$', common.method_splitter, {'GET': topic.get_user_topics}),
+    url(r'^u/(.*)/replies/$', common.method_splitter, {'GET': topic.get_user_replies}),
+    url(r'^u/(.*)/favorites/$', common.method_splitter, {'GET': topic.get_user_favorites}),
+    url(r'^u/(.*)/$', common.method_splitter, {'GET': topic.get_profile}),
     url(r'^vote/$', common.method_splitter, {'GET': topic.get_vote}),
     url(r'^favorite/$', common.method_splitter, {'GET': topic.get_favorite}),
     url(r'^unfavorite/$', common.method_splitter, {'GET': topic.get_cancel_favorite}),

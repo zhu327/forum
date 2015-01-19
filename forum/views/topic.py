@@ -1,14 +1,142 @@
 # coding: utf-8
 
 import json, math
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.utils import timezone
 from django.conf import settings
-from forum.models import ForumUser, Topic, Favorite, Vote
+from forum.models import ForumUser, Topic, Favorite, Vote, Reply, Node
+
+
+def get_node_topics(request, slug):
+    try:
+        node = Node.objects.get(slug=slug)
+    except Node.DoesNotExist:
+        raise Http404
+
+    user = request.user
+    if user.is_authenticated():
+        counter = {
+            'topics': user.topic_author.all().count(),
+            'replies': user.reply_author.all().count(),
+            'favorites': user.fav_user.all().count()
+        }
+        notifications_count = user.notify_user.filter(status=0).count()
+
+    current_page = int(request.GET.get('p', '1'))
+
+    topics, topic_page = Topic.objects.get_all_topics_by_node_slug(node_slug=slug, current_page=current_page)
+    active_page = 'topic'
+    return render_to_response('topic/node_topics.html', locals(),
+        context_instance=RequestContext(request))
+
+
+def get_user_topics(request, uid):
+    try:
+        if uid.isdigit():
+            user_info = ForumUser.objects.get(pk=uid)
+        else:
+            user_info = ForumUser.objects.get(username=uid)
+    except ForumUser.DoesNotExist:
+        raise Http404
+
+    current_page = int(request.GET.get('p', '1'))
+    counter = {
+        'topics': user_info.topic_author.all().count(),
+        'replies': user_info.reply_author.all().count(),
+        'favorites': user_info.fav_user.all().count()
+    }
+
+    user = request.user
+    if user.is_authenticated():
+        notifications_count = user.notify_user.filter(status=0).count()
+
+    topics, topic_page = Topic.objects.get_user_all_topics(user_info.id, current_page=current_page)
+    active_page = 'topic'
+    return render_to_response('topic/user_topics.html', locals(),
+        context_instance=RequestContext(request))
+
+
+def get_user_replies(request, uid):
+    try:
+        if uid.isdigit():
+            user_info = ForumUser.objects.get(pk=uid)
+        else:
+            user_info = ForumUser.objects.get(username=uid)
+    except ForumUser.DoesNotExist:
+        raise Http404
+
+    current_page = int(request.GET.get('p', '1'))
+    counter = {
+        'topics': user_info.topic_author.all().count(),
+        'replies': user_info.reply_author.all().count(),
+        'favorites': user_info.fav_user.all().count()
+    }
+
+    user = request.user
+    if user.is_authenticated():
+        notifications_count = user.notify_user.filter(status=0).count()
+
+    replies, reply_page = Reply.objects.get_user_all_replies(user_info.id, current_page=current_page)
+    active_page = 'topic'
+    return render_to_response('topic/user_replies.html', locals(),
+        context_instance=RequestContext(request))
+
+
+def get_user_favorites(request, uid):
+    try:
+        if uid.isdigit():
+            user_info = ForumUser.objects.get(pk=uid)
+        else:
+            user_info = ForumUser.objects.get(username=uid)
+    except ForumUser.DoesNotExist:
+        raise Http404
+
+    current_page = int(request.GET.get('p', '1'))
+    counter = {
+        'topics': user_info.topic_author.all().count(),
+        'replies': user_info.reply_author.all().count(),
+        'favorites': user_info.fav_user.all().count()
+    }
+
+    user = request.user
+    if user.is_authenticated():
+        notifications_count = user.notify_user.filter(status=0).count()
+
+    favorites, favorite_page = Favorite.objects.get_user_all_favorites(user_info.id, current_page=current_page)
+    active_page = 'topic'
+    return render_to_response('topic/user_favorites.html', locals(),
+        context_instance=RequestContext(request))
+
+
+def get_profile(request, uid):
+    try:
+        if uid.isdigit():
+            user_info = ForumUser.objects.get(pk=uid)
+        else:
+            user_info = ForumUser.objects.get(username=uid)
+    except ForumUser.DoesNotExist:
+        raise Http404
+
+    current_page = int(request.GET.get('p', '1'))
+    counter = {
+        'topics': user_info.topic_author.all().count(),
+        'replies': user_info.reply_author.all().count(),
+        'favorites': user_info.fav_user.all().count()
+    }
+
+    user = request.user
+    if user.is_authenticated():
+        notifications_count = user.notify_user.filter(status=0).count()
+
+    topics, topic_page = Topic.objects.get_user_all_topics(user_info.id, current_page=current_page)
+    replies, reply_page = Reply.objects.get_user_all_replies(user_info.id, current_page=current_page)
+    active_page = '_blank'
+    return render_to_response('topic/profile.html', locals(),
+        context_instance=RequestContext(request))
 
 
 def get_vote(request):

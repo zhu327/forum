@@ -9,6 +9,7 @@ Django模板引擎的自定义过滤器，需要在模板中引用
 import json, re, random
 from datetime import date, datetime
 from django import template
+from django.utils import timezone
 from markdown import markdown
 
 
@@ -97,10 +98,10 @@ def pretty_date(time = None): # 输出时间，格式化的时间
     if time == None:
         return time
 
-    now = datetime.now()
-    if type(time) is str or type(time) is unicode:
+    now = timezone.now()
+    if isinstance(time, basestring):
         time = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-    elif type(time) is int:
+    elif isinstance(time, int):
         diff = now - datetime.fromtimestamp(time)
     elif isinstance(time, datetime):
         diff = now - time
