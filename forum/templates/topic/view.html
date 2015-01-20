@@ -170,7 +170,7 @@
                             <span class="time">{{ reply.created|pretty_date }}</span>
                             {% if user.is_authenticated %}
                             {% ifequal user.id reply.author_id %}
-                                <a href="/reply/edit/{{ reply.id }}">编辑回复</a>
+                                <a href="/reply/edit/{{ reply.id }}/">编辑回复</a>
                             {% endifequal %}
                             {% endif %}
                             <span class="floor fr">#{{ floor }}</span>
@@ -251,7 +251,7 @@
     {% else %}
         <div class="login-box container-box">
             <div class="ui-content tc">
-                <a class="btn btn-small mr10" type="button" href="/login/">登录</a>
+                <a class="btn btn-small mr10" type="button" href="/login/?next={{ request.get_full_path }}">登录</a>
                 <a class="btn btn-small mr10" type="button" href="/register/">注册</a>
                 <a class="btn btn-small" type="button" href="/forgot/">找回密码</a>
             </div>

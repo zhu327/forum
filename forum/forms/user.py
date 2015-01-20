@@ -95,6 +95,8 @@ class LoginForm(forms.Form):
             self.user_cache = authenticate(username=email, password=password)
             if self.user_cache is None:
                 raise forms.ValidationError(u'邮箱或者密码不正确')
+            elif not self.user_cache.is_active:
+                raise forms.ValidationError(u'用户已被锁定，请联系管理员解锁')
         return self.cleaned_data
 
     def get_user(self):
@@ -143,8 +145,6 @@ class RegisterForm(forms.ModelForm):
     def save(self, commit=True):
         user = super(RegisterForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password'])
-        user.email = self.cleaned_data['email']
-        user.is_staff = True
         if commit:
             user.save()
         return user

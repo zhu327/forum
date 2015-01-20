@@ -111,7 +111,7 @@ class FavoriteManager(models.Manager):
     def get_user_all_favorites(self, uid, num = 16, current_page = 1):
         count = self.get_query_set().filter(owner_user__id=uid).count()
         page = Pages(count, current_page, num)
-        query = self.get_query_set().select_related('involved_topic__node', \
+        query = self.get_query_set().select_related('involved_topic', 'involved_topic__node', \
             'involved_topic__author', 'involved_topic__last_replied_by').\
             filter(owner_user__id=uid).order_by('-id')[page.start:page.end]
         return query, page

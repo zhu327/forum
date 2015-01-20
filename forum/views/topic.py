@@ -2,20 +2,114 @@
 
 import json, math
 from django.http import HttpResponse, Http404
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.utils import timezone
 from django.conf import settings
 from forum.models import ForumUser, Topic, Favorite, Vote, Reply, Node
+from forum.forms.topic import ReplyEditForm, CreateForm
+
+
+@login_required
+def get_create(request, slug=None, errors=None):
+    pass
+
+
+@login_required
+def post_create(request, slug=None):
+    pass
+
+
+@login_required
+def get_edit(request, topic_id, errors=None):
+    topic = get_object_or_404(Topic, pk=topic_id)
+
+    user = request.user
+    counter = {
+        'topics': user.topic_author.all().count(),
+        'replies': user.reply_author.all().count(),
+        'favorites': user.fav_user.all().count()
+    }
+    notifications_count = user.notify_user.filter(status=0).count()
+
+    active_page = 'topic'
+    return render_to_response('topic/edit.html', locals(),
+        context_instance=RequestContext(request))
+
+
+@login_required
+def post_edit(request, topic_id):
+    topic = get_object_or_404(Topic, pk=topic_id)
+
+    form = CreateForm(request.POST)
+    if not form.is_valid():
+        return get_edit(request, topic_id, errors=form.errors)
+
+    user = request.user
+    if topic.author.id != user.id:
+        errors = {'invalid_permission': u'没有权限修改该主题'}
+        return get_edit(request, topic_id, errors=errors)
+
+    topic.title = form.cleaned_data.get('title')
+    topic.content = form.cleaned_data.get('content')
+    topic.updated = timezone.now()
+    topic.last_touched = timezone.now()
+    topic.save()
+
+    reputation = user.reputation
+    reputation = (reputation or 0) - 2 # 每次修改回复扣除用户威望2点
+    reputation = 0 if reputation < 0 else reputation
+    user.reputation = reputation
+    user.save()
+
+    return redirect('/t/%s/' % topic.id)
+
+
+@login_required
+def get_reply_edit(request, reply_id, errors=None):
+    reply = get_object_or_404(Reply, pk=reply_id)
+    user = request.user
+    counter = {
+        'topics': user.topic_author.all().count(),
+        'replies': user.reply_author.all().count(),
+        'favorites': user.fav_user.all().count()
+    }
+    notifications_count = user.notify_user.filter(status=0).count()
+    active_page = 'topic'
+    return render_to_response('topic/reply_edit.html', locals(),
+        context_instance=RequestContext(request))
+
+
+@login_required
+def post_reply_edit(request, reply_id):
+    reply = get_object_or_404(Reply, pk=reply_id)
+
+    form = ReplyEditForm(request.POST)
+    if not form.is_valid():
+        return get_reply_edit(request, reply_id, errors=form.errors)
+
+    user = request.user
+    if reply.author.id != user.id:
+        errors = {'invalid_permission': u'没有权限修改该回复'}
+        return get_reply_edit(request, reply_id, errors=errors)
+
+    reply.content = form.cleaned_data.get('content')
+    reply.updated = timezone.now()
+    reply.save()
+
+    reputation = user.reputation
+    reputation = (reputation or 0) - 2 # 每次修改回复扣除用户威望2点
+    reputation = 0 if reputation < 0 else reputation
+    user.reputation = reputation
+    user.save()
+
+    return redirect('/t/%s/' % reply.topic.id)
 
 
 def get_node_topics(request, slug):
-    try:
-        node = Node.objects.get(slug=slug)
-    except Node.DoesNotExist:
-        raise Http404
+    node = get_object_or_404(Node, slug=slug)
 
     user = request.user
     if user.is_authenticated():

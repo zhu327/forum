@@ -62,7 +62,7 @@ def pagination(page, uri, list_rows = 10): # 显示分页
 
     t = template.Template("""
         {% load forum_extras %} {# 如果要使用自定义tag filter这里也需要加载 #}
-        {% if page and page.pages != 0 and page.pages != 1 %}
+        {% if page and page.pages > 1 %}
             <ul>
                 <li {% ifequal page.index page.prev %}class="disabled"{% endifequal %}><a href="{% build_uri uri 'p' page.prev %}">«</a></li>
                 {% for p in gen_page_list %}

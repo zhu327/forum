@@ -17,6 +17,9 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+    url(r'^t/create/(.*)/$', common.method_splitter, {'GET': topic.get_create, 'POST': topic.post_create}),
+    url(r'^t/edit/(.*)/$', common.method_splitter, {'GET': topic.get_edit, 'POST': topic.post_edit}),
+    url(r'^reply/edit/(.*)/$', common.method_splitter, {'GET': topic.get_reply_edit, 'POST': topic.post_reply_edit}),
     url(r'^node/(.*)/$', common.method_splitter, {'GET': topic.get_node_topics}),
     url(r'^u/(.*)/topics/$', common.method_splitter, {'GET': topic.get_user_topics}),
     url(r'^u/(.*)/replies/$', common.method_splitter, {'GET': topic.get_user_replies}),

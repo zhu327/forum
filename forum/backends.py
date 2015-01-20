@@ -7,7 +7,7 @@ class EmailAuthBackend(object):
     def authenticate(self, username=None, password=None):
         try:
             user = ForumUser.objects.get(email=username)
-            if user.check_password(password) and user.is_staff:
+            if user.check_password(password):
                 return user
             return None
         except ForumUser.DoesNotExist:
