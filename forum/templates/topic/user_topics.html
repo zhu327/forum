@@ -15,7 +15,7 @@
                     </a>
                     <div class="main">
                         <h3 class="title">
-                            <a href="/t/{{ topic.id }}#reply{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}">{{ topic.title }}</a>
+                            <a href="/t/{{ topic.id }}#reply{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}/">{{ topic.title }}</a>
                         </h3>
                         <div class="meta">
                             <span class="node"><a href="/node/{{ topic.node.slug }}/">{{ topic.node.name }}</a></span> •
@@ -36,7 +36,7 @@
                     </div>
                     {% if topic.reply_count %}
                         <div class="count">
-                            <a href="/t/{{ topic.id }}#reply{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}">{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}</a>
+                            <a href="/t/{{ topic.id }}#reply{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}/">{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}</a>
                         </div>
                     {% endif %}
                 </div>

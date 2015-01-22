@@ -1,4 +1,5 @@
 {% extends 'snippet/layout.html' %}
+{% load forum_extras %}
 
 {% block title %}
     {{ topic.title }} - F2E
@@ -106,21 +107,21 @@
 {% block main %}
     <div class="topic-detail container-box">
         <div class="ui-header">
-            <a href="/u/{% if topic.author_username %}{{ topic.author_username }}{% else %}{{ topic.author_id }}{% endif %}/">
-                <img src="/static/avatar/m_{% if topic.author_avatar %}{{ topic.author_avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
+            <a href="/u/{% if topic.author.username %}{{ topic.author.username }}{% else %}{{ topic.author.id }}{% endif %}/">
+                <img src="/static/avatar/m_{% if topic.author.avatar %}{{ topic.author.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
             </a>
             <div class="main">
                 <h3 class="title">{{ topic.title }}</h3>
                 <div class="meta">
-                    <span class="node"><a href="/node/{{ topic.node_slug }}/">{{ topic.node_name }}</a></span> •
+                    <span class="node"><a href="/node/{{ topic.node.slug }}/">{{ topic.node.name }}</a></span> •
                     <span class="username">
-                        <a href="/u/{% if topic.author_username %}{{ topic.author_username }}{% else %}{{ topic.author_id }}{% endif %}/">{{ topic.author_username }}</a>
+                        <a href="/u/{% if topic.author.username %}{{ topic.author.username }}{% else %}{{ topic.author.id }}{% endif %}/">{{ topic.author.username }}</a>
                     </span> •
                     {% if topic.last_replied_time %}
                         <span class="created-time">发表于 {{ topic.created|pretty_date }}</span> •
                         <span class="last-reply-username">最后回复来自
-                            <a href="/u/{% if topic.last_replied_username %}{{ topic.last_replied_username }}{% else %}{{ topic.last_replied_id }}{% endif %}/">
-                                <strong>{{ topic.last_replied_username }}</strong>
+                            <a href="/u/{% if topic.last_replied_by.username %}{{ topic.last_replied_by.username }}{% else %}{{ topic.last_replied_by.id }}{% endif %}/">
+                                <strong>{{ topic.last_replied_by.username }}</strong>
                             </a>
                         </span> •
                         <span class="last-reply-time">{{ topic.last_replied_time|pretty_date }}</span>
@@ -139,42 +140,40 @@
             {% else %}
             <a href="/unfavorite/?topic_id={{ topic.id }}" class="J_topicFavorite" data-type="unfavorite">取消收藏</a>
             {% endif %}
-            <a href="#" onclick="window.open('https://twitter.com/intent/tweet?hashtags={{ topic.node_slug }}&text={{ topic.title }}&url=http://{{ request.get_host }}{{ request.get_full_path }}');">Tweet</a>
+            <a href="#" onclick="window.open('https://twitter.com/intent/tweet?hashtags={{ topic.node.slug }}&text={{ topic.title }}&url=http://{{ request.get_host }}{{ request.get_full_path }}');">Tweet</a>
             <a href="#" onclick="window.open('http://service.weibo.com/share/share.php?url=http://{{ request.get_host }}{{ request.get_full_path }}&title=F2E%20-%20{{ topic.title }}', '_blank', 'width=550, height=370');">新浪微博</a>
             <a href="/vote/?topic_id={{ topic.id }}" class="J_topicVote">喜欢</a>
-            {% if user.is_authenticated and user.id == topic.author_id %}
-                <a href="/t/edit/{{ topic.id }}" class="fr">编辑主题</a>
+            {% if user.is_authenticated and user.id == topic.author.id %}
+                <a href="/t/edit/{{ topic.id }}/" class="fr">编辑主题</a>
             {% endif %}
             <span class="hits fr mr10">{% if topic.hits %}{{ topic.hits }}{% else %}0{% endif %} 次点击</span>
         </div>
     </div>
 
-    {% ifnotequal replies.page.total 0 %}
+    {% ifnotequal reply_page.total 0 %}
     <div class="topic-reply container-box mt10">
         <div class="ui-header">
-            <span>共收到{{ replies.page.total }}条回复</span>
+            <span>共收到{{ reply_page.total }}条回复</span>
         </div>
         <div class="ui-content">
-            {% set floor = reply_num * (current_page - 1) %}
-            {% for reply in replies.list %}
-            {% set floor = floor + 1 %}
+            {% for reply in replies %}
                 <div class="reply-item">
-                    <a href="/u/{{ reply.author_username }}/">
-                        <img src="/static/avatar/m_{% if reply.author_avatar %}{{ reply.author_avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
+                    <a href="/u/{{ reply.author.username }}/">
+                        <img src="/static/avatar/m_{% if reply.author.avatar %}{{ reply.author.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
                     </a>
                     <div class="main">
                         <div class="meta">
-                            <a href="/u/{{ reply.author_username }}/" class="reply-username">
-                                <span class="username">{{ reply.author_username }}</span>
+                            <a href="/u/{{ reply.author.username }}/" class="reply-username">
+                                <span class="username">{{ reply.author.username }}</span>
                             </a>
                             <span class="time">{{ reply.created|pretty_date }}</span>
                             {% if user.is_authenticated %}
-                            {% ifequal user.id reply.author_id %}
+                            {% ifequal user.id reply.author.id %}
                                 <a href="/reply/edit/{{ reply.id }}/">编辑回复</a>
                             {% endifequal %}
                             {% endif %}
-                            <span class="floor fr">#{{ floor }}</span>
-                            <span class="reply-to fr J_replyTo" data-username="{{ reply.author_username }}">
+                            <span class="floor fr">#{{ floor|add:forloop.counter }}</span>
+                            <span class="reply-to fr J_replyTo" data-username="{{ reply.author.username }}">
                                 <img src="/static/images/reply.png" alt="" />
                             </span>
                         </div>
@@ -184,9 +183,9 @@
             {% endfor %}
         </div>
         <div class="ui-footer">
-            {% if replies.page.pages > 1 %}
+            {% if reply_page.pages > 1 %}
             <div class="pagination pagination-mini">
-                {% pagination replies.page request.get_full_path %}
+                {% pagination reply_page request.get_full_path %}
             </div>
             {% endif %}
         </div>
@@ -206,7 +205,6 @@
                 <form class="mt10" action="" method="post">
                     {{ errors|dump_errors }}
                     <textarea rows="3" class="content mt5 smart-code-support J_replyContent" placeholder="回复内容" name="content"></textarea>
-                    <input name="tid" type="hidden" value="{{ topic.id }}" />
                     <input type="submit" id="checkall" class="btn btn-small" value="立即回复">
                     {% csrf_token %}
                 </form>
@@ -216,7 +214,7 @@
                 <span class="title">登录后即可参与回复</span>
             </div>
             <div class="ui-content">
-                <a class="btn btn-small mt5 mr10" type="button" href="/login/">登录</a>
+                <a class="btn btn-small mt5 mr10" type="button" href="/login/?next={{ request.get_full_path }}">登录</a>
                 <a class="btn btn-small mt5" type="button" href="/register/">注册</a>
             </div>
         {% endif %}
@@ -235,13 +233,13 @@
             </div>
             <div class="ui-content">
                 <div class="status status-topic">
-                    <strong><a href="/u/{{ user.username }}/topics/">{{ user.counter.topics }}</a></strong> 主题
+                    <strong><a href="/u/{{ user.username }}/topics/">{{ counter.topics }}</a></strong> 主题
                 </div>
                 <div class="status status-reply">
-                    <strong><a href="/u/{{ user.username }}/replies/">{{ user.counter.replies }}</a></strong> 回复
+                    <strong><a href="/u/{{ user.username }}/replies/">{{ counter.replies }}</a></strong> 回复
                 </div>
                 <div class="status status-favorite">
-                    <strong><a href="/u/{{ user.username }}/favorites/">{{ user.counter.favorites }}</a></strong> 收藏
+                    <strong><a href="/u/{{ user.username }}/favorites/">{{ counter.favorites }}</a></strong> 收藏
                 </div>
                 <div class="status status-reputation">
                     <strong>{% if user.reputation %}{{ user.reputation }}{% else %}0{% endif %}</strong> 威望

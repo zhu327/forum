@@ -15,7 +15,7 @@
                     </a>
                     <div class="main">
                         <h3 class="title">
-                            <a href="/t/{{ favorite.involved_topic.id }}">{{ favorite.involved_topic.title }}</a>
+                            <a href="/t/{{ favorite.involved_topic.id }}/">{{ favorite.involved_topic.title }}</a>
                         </h3>
                         <div class="meta">
                             <span class="node"><a href="/node/{{ favorite.involved_topic.node.slug }}/">{{ favorite.involved_topic.node.name }}</a></span> •
@@ -36,7 +36,7 @@
                     </div>
                     {% if favorite.involved_topic.reply_count %}
                         <div class="count">
-                            <a href="/t/{{ favorite.involved_topic.id }}#reply{% if favorite.involved_topic.reply_count %}{{ favorite.involved_topic.reply_count }}{% else %}0{% endif %}">{% if favorite.involved_topic.reply_count %}{{ favorite.involved_topic.reply_count }}{% else %}0{% endif %}</a>
+                            <a href="/t/{{ favorite.involved_topic.id }}#reply{% if favorite.involved_topic.reply_count %}{{ favorite.involved_topic.reply_count }}{% else %}0{% endif %}/">{% if favorite.involved_topic.reply_count %}{{ favorite.involved_topic.reply_count }}{% else %}0{% endif %}</a>
                         </div>
                     {% endif %}
                 </div>

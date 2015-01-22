@@ -2,6 +2,10 @@
 
 from django import forms
 
+class ReplyForm(forms.Form):
+    content = forms.CharField(error_messages={
+        'required': u'请填写回复内容',})
+
 
 class CreateForm(forms.Form):
     title = forms.CharField(min_length=3, max_length=56,
@@ -15,8 +19,3 @@ class CreateForm(forms.Form):
             'required': u'请填写帖子内容',
             'min_length': u'帖子内容长度过短（少于15个字符）',
         })
-
-
-class ReplyEditForm(forms.Form):
-    content = forms.CharField(error_messages={
-        'required': u'请填写回复内容',})

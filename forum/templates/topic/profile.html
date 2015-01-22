@@ -154,7 +154,7 @@
                         <img src="/static/avatar/m_{% if topic.author.avatar %}{{ topic.author.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
                         <div class="main">
                             <h3 class="title">
-                                <a href="/t/{{ topic.id }}#reply{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}">{{ topic.title }}</a>
+                                <a href="/t/{{ topic.id }}#reply{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}/">{{ topic.title }}</a>
                             </h3>
                             <div class="meta">
                                 <span class="node"><a href="/node/{{ topic.node.slug }}/">{{ topic.node.name }}</a></span> •
@@ -175,7 +175,7 @@
                         </div>
                         {% if topic.reply_count %}
                             <div class="count">
-                                <a href="/t/{{ topic.id }}#reply{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}">{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}</a>
+                                <a href="/t/{{ topic.id }}#reply{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}/">{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}</a>
                             </div>
                         {% endif %}
                     </div>
@@ -203,7 +203,7 @@
                     <div class="reply-item">
                         <div class="main">
                             <span class="title">
-                                回复了 {{ reply.topic.author.username }} 创建的主题 <a href="/t/{{ reply.topic.id }}">{{ reply.topic.title }}</a>
+                                回复了 {{ reply.topic.author.username }} 创建的主题 <a href="/t/{{ reply.topic.id }}/">{{ reply.topic.title }}</a>
                             </span>
                             <div class="content">
                                 {{ reply.content|markdown|content_process|safe }}

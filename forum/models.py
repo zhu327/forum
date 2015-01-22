@@ -99,7 +99,7 @@ class ReplyManager(models.Manager):
     def get_user_all_replies(self, uid, num = 16, current_page = 1):
         count = self.get_query_set().filter(author__id=uid).count()
         page = Pages(count, current_page, num)
-        query = self.get_query_set().select_related('topic', 'author').\
+        query = self.get_query_set().select_related('topic', 'topic__author').\
             filter(author__id=uid).order_by('-id')[page.start:page.end]
         return query, page
 
@@ -124,7 +124,7 @@ class NotificationManager(models.Manager):
     def get_user_all_notifications(self, uid, num = 16, current_page = 1):
         count = self.get_query_set().filter(involved_user__id=uid).count()
         page = Pages(count, current_page, num)
-        query = self.get_query_set().select_related('trigger_user', 'involved_topic', 'involved_user').\
+        query = self.get_query_set().select_related('trigger_user', 'involved_topic').\
             filter(involved_user__id=uid).order_by('-id')[page.start:page.end]
         return query, page
 
@@ -137,14 +137,14 @@ class ForumUser(AbstractUser):
     '''
     nickname = models.CharField(max_length=200, null=True, blank=True)
     avatar = models.CharField(max_length=200, null=True, blank=True)    # 头像
-    signature = NormalTextField(null=True)                              # 签名
+    signature = models.CharField(max_length=500, null=True, blank=True) # 签名
     location = models.CharField(max_length=200, null=True, blank=True)
     website = models.URLField(null=True, blank=True)
     company = models.CharField(max_length=200, null=True, blank=True)
     role = models.IntegerField(null=True, blank=True)                   # 角色
     balance = models.IntegerField(null=True, blank=True)                # 余额
     reputation = models.IntegerField(null=True, blank=True)             # 声誉
-    self_intro = NormalTextField(null=True)                             # 自我介绍
+    self_intro = models.CharField(max_length=500, null=True, blank=True)# 自我介绍
     updated = models.DateTimeField(null=True, blank=True)
     twitter = models.CharField(max_length=200, null=True, blank=True)
     github = models.CharField(max_length=200, null=True, blank=True)
@@ -155,7 +155,7 @@ class Plane(models.Model):
     '''
     论坛节点分类
     '''
-    name = models.CharField(max_length=200, null=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
     created = models.DateTimeField(null=True, blank=True)
     updated = models.DateTimeField(null=True, blank=True)
 
@@ -167,15 +167,15 @@ class Node(models.Model):
     '''
     论坛板块单位，节点
     '''
-    name = models.CharField(max_length=200, null=True)
-    slug = NormalTextField(null=True)                           # 块，作为node的识别url
-    thumb = NormalTextField(null=True)                          # 拇指?
-    introduction = NormalTextField(null=True)                   # 介绍
+    name = models.CharField(max_length=200, null=True, blank=True)
+    slug = models.CharField(max_length=200, null=True, blank=True)          # 块，作为node的识别url
+    thumb = models.CharField(max_length=200, null=True, blank=True)         # 拇指?
+    introduction = models.CharField(max_length=500, null=True, blank=True)  # 介绍
     created = models.DateTimeField(null=True, blank=True)
     updated = models.DateTimeField(null=True, blank=True)
     plane = models.ForeignKey(Plane, null=True, blank=True)
     topic_count = models.IntegerField(null=True, blank=True)
-    custom_style = NormalTextField(null=True)
+    custom_style = NormalTextField(null=True, blank=True)
     limit_reputation = models.IntegerField(null=True, blank=True) # 最小声誉，估计是权限控制
 
     objects = NodeManager()
@@ -188,8 +188,8 @@ class Topic(models.Model):
     '''
     话题表，定义了论坛帖子的基本单位
     '''
-    title = NormalTextField(null=True)
-    content = NormalTextField(null=True)
+    title = models.CharField(max_length=200, null=True, blank=True)
+    content = NormalTextField(null=True, blank=True)
     status = models.IntegerField(null=True, blank=True)
     hits = models.IntegerField(null=True, blank=True)
     created = models.DateTimeField(null=True, blank=True)
@@ -215,7 +215,7 @@ class Reply(models.Model):
     '''
     topic = models.ForeignKey(Topic, null=True, blank=True)
     author = models.ForeignKey(ForumUser, related_name='reply_author', null=True, blank=True)
-    content = NormalTextField(null=True)
+    content = NormalTextField(null=True, blank=True)
     created = models.DateTimeField(null=True, blank=True)
     updated = models.DateTimeField(null=True, blank=True)
     up_vote = models.IntegerField(null=True, blank=True)
@@ -242,7 +242,7 @@ class Notification(models.Model):
     '''
     通知消息
     '''
-    content = NormalTextField(null=True)
+    content = NormalTextField(null=True, blank=True)
     status = models.IntegerField(null=True, blank=True)
     involved_type = models.IntegerField(null=True, blank=True)
     involved_user = models.ForeignKey(ForumUser, related_name='notify_user', null=True, blank=True)

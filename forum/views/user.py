@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext, Context, loader
 from django.utils import timezone
 from django.conf import settings
+from forum.models import ForumUser
 from forum.forms.user import RegisterForm, LoginForm, ForgotPasswordForm, SettingPasswordForm, SettingForm
 from common import sendmail
 
@@ -28,10 +29,7 @@ def post_setting(request):
     cd = copy.copy(form.cleaned_data)
     cd.pop('username')
     cd.pop('email')
-    for k, v in cd.iteritems():
-        setattr(user, k, v)
-    user.updated = timezone.now()
-    user.save()
+    ForumUser.objects.filter(pk=user.id).update(updated=timezone.now(), **cd)
     return get_setting(request, success_message=u'用户基本资料更新成功')
 
 
@@ -66,9 +64,7 @@ def post_setting_avatar(request):
     avatar_96x96.save(os.path.join(path, '../static/avatar/b_%s.png' % avatar_name), 'PNG')
     avatar_48x48.save(os.path.join(path, '../static/avatar/m_%s.png' % avatar_name), 'PNG')
     avatar_32x32.save(os.path.join(path, '../static/avatar/s_%s.png' % avatar_name), 'PNG')
-    user.avatar = '%s.png' % avatar_name
-    user.updated = timezone.now()
-    user.save()
+    ForumUser.objects.filter(pk=user.id).update(updated=timezone.now(), avatar='%s.png' % avatar_name)
     return get_setting_avatar(request)
 
 
@@ -133,7 +129,7 @@ def post_login(request):
     user = form.get_user()
     auth.login(request, user)
 
-    if user.is_superuser:
+    if user.is_staff:
         return redirect(request.REQUEST.get('next', '/manager/admin/'))
 
     return redirect(request.REQUEST.get('next', '/'))

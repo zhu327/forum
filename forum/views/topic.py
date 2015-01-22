@@ -1,6 +1,6 @@
 # coding: utf-8
 
-import json, math
+import json, math, hashlib
 from django.http import HttpResponse, Http404
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.contrib import auth
@@ -8,18 +8,198 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.utils import timezone
 from django.conf import settings
-from forum.models import ForumUser, Topic, Favorite, Vote, Reply, Node
-from forum.forms.topic import ReplyEditForm, CreateForm
+from forum.models import ForumUser, Topic, Favorite, Vote, Reply, Node, Notification, Plane
+from forum.forms.topic import ReplyForm, CreateForm
+from common import find_mentions
+
+
+def get_index(request):
+    user = request.user
+    if user.is_authenticated():
+        counter = {
+            'topics': user.topic_author.all().count(),
+            'replies': user.reply_author.all().count(),
+            'favorites': user.fav_user.all().count()
+        }
+        notifications_count = user.notify_user.filter(status=0).count()
+
+    status_counter = {
+        'users': ForumUser.objects.all().count(),
+        'nodes': Node.objects.all().count(),
+        'topics': Topic.objects.all().count(),
+        'replies': Reply.objects.all().count(),
+    }
+
+    current_page = int(request.GET.get('p', '1'))
+    topics, topic_page = Topic.objects.get_all_topic(current_page=current_page)
+    planes = Plane.objects.all()
+    hot_nodes = Node.objects.get_all_hot_nodes()
+    active_page = 'topic'
+    return render_to_response('topic/topics.html', locals(),
+        context_instance=RequestContext(request))
+
+
+def get_view(request, topic_id, errors=None):
+    try:
+        topic = Topic.objects.get_topic_by_topic_id(topic_id)
+    except Topic.DoesNotExist:
+        raise Http404
+    user = request.user
+    if user.is_authenticated():
+        counter = {
+            'topics': user.topic_author.all().count(),
+            'replies': user.reply_author.all().count(),
+            'favorites': user.fav_user.all().count()
+        }
+        notifications_count = user.notify_user.filter(status=0).count()
+        topic_favorited = Favorite.objects.filter(involved_topic=topic, owner_user=user)
+
+    reply_num = 106
+    reply_count = topic.reply_count
+    reply_last_page = (reply_count // reply_num + (reply_count % reply_num and 1)) or 1
+    current_page = int(request.GET.get('p', reply_last_page))
+    replies, reply_page = Reply.objects.get_all_replies_by_topic_id(topic.id, current_page=current_page, num = reply_num)
+    active_page = 'topic'
+    floor = reply_num * (current_page - 1)
+
+    topic.reply_count = reply_page.total
+    topic.hits = (topic.hits or 0) + 1
+    topic.save()
+    return render_to_response('topic/view.html', locals(),
+        context_instance=RequestContext(request))
+
+
+@login_required
+def post_view(request, topic_id):
+    try:
+        topic = Topic.objects.get_topic_by_topic_id(topic_id)
+    except Topic.DoesNotExist:
+        raise Http404
+    form = ReplyForm(request.POST)
+    if not form.is_valid():
+        return get_view(request, topic_id, errors=form.errors)
+
+    user = request.user
+    try:
+        last_reply = topic.reply_set.all().order_by('-created')[0]
+    except IndexError:
+        last_reply = None
+    if last_reply:
+        last_replied_fingerprint = hashlib.sha1(str(last_reply.topic.id) + str(last_reply.author.id) + last_reply.content).hexdigest()
+        new_replied_fingerprint = hashlib.sha1(str(topic_id) + str(user.id) + form.cleaned_data.get('content')).hexdigest()
+        if last_replied_fingerprint == new_replied_fingerprint:
+            errors = {'duplicated_reply': u'回复重复提交'}
+            return get_view(request, topic_id, errors=errors)
+
+    now = timezone.now()
+    reply = Reply(
+        topic = topic,
+        author = user,
+        content = form.cleaned_data.get('content'),
+        created = now,
+    )
+    reply.save()
+    Topic.objects.filter(pk=topic.id).update(last_replied_by=user, last_replied_time=now, last_touched=now)
+
+    if user.id != topic.author.id:
+        notification = Notification(
+            content = form.cleaned_data.get('content'),
+            status = 0,
+            involved_type = 1, # 0: mention, 1: reply
+            involved_user = topic.author,
+            involved_topic = topic,
+            trigger_user = user,
+            occurrence_time = now,
+        )
+        notification.save()
+
+    mentions = list(set(find_mentions(form.cleaned_data.get('content'))))
+    if user.username in mentions:
+        mentions.remove(user.username)
+    if topic.author.username in mentions:
+        mentions.remove(topic.author.username)
+    if mentions:
+        mention_users = ForumUser.objects.filter(username__in=mentions)
+        if mention_users:
+            for mention_user in mention_users:
+                notification = Notification(
+                    content = form.cleaned_data.get('content'),
+                    status = 0,
+                    involved_type = 0, # 0: mention, 1: reply
+                    involved_user = mention_user,
+                    involved_topic = topic,
+                    trigger_user = user,
+                    occurrence_time = now,
+                )
+                notification.save()
+
+    if user.id != topic.author.id:
+        topic_time_diff = timezone.now() - topic.created
+        reputation = topic.author.reputation or 0
+        reputation = reputation + 2 * math.log(user.reputation or 0 + topic_time_diff.days + 10, 10)
+        ForumUser.objects.filter(pk=topic.author.id).update(reputation=reputation)
+
+    return redirect('/t/%s#reply%s' % (topic.id, topic.reply_count + 1))
 
 
 @login_required
 def get_create(request, slug=None, errors=None):
-    pass
+    node = get_object_or_404(Node, slug=slug)
+    user = request.user
+    counter = {
+        'topics': user.topic_author.all().count(),
+        'replies': user.reply_author.all().count(),
+        'favorites': user.fav_user.all().count()
+    }
+    notifications_count = user.notify_user.filter(status=0).count()
+    node_slug = node.slug
+    active_page = 'topic'
+    return render_to_response('topic/create.html', locals(),
+        context_instance=RequestContext(request))
 
 
 @login_required
 def post_create(request, slug=None):
-    pass
+    node = get_object_or_404(Node, slug=slug)
+
+    form = CreateForm(request.POST)
+    if not form.is_valid():
+        return get_create(request, slug=slug, errors=form.errors)
+
+    user = request.user
+    try:
+        last_created = user.topic_author.all().order_by('-created')[0]
+    except IndexError:
+        last_created = None
+
+    if last_created: # 如果用户最后一篇的标题内容与提交的相同
+        last_created_fingerprint = hashlib.sha1(last_created.title + \
+            last_created.content + str(last_created.node.id)).hexdigest()
+        new_created_fingerprint = hashlib.sha1(form.cleaned_data.get('title') + \
+            form.cleaned_data.get('content') + str(node.id)).hexdigest()
+
+        if last_created_fingerprint == new_created_fingerprint:
+            errors = {'duplicated_topic': u'帖子重复提交'}
+            return get_create(request, slug=slug, errors=errors)
+
+    now = timezone.now()
+    topic = Topic(
+        title = form.cleaned_data.get('title'),
+        content = form.cleaned_data.get('content'),
+        created = now,
+        node = node,
+        author = user,
+        reply_count = 0,
+        last_touched = now,
+    )
+    topic.save()
+
+    reputation = user.reputation or 0
+    reputation = reputation - 5 # 每次发布话题扣除用户威望5点
+    reputation = 0 if reputation < 0 else reputation
+    ForumUser.objects.filter(pk=user.id).update(reputation=reputation)
+
+    return redirect('/')
 
 
 @login_required
@@ -41,7 +221,10 @@ def get_edit(request, topic_id, errors=None):
 
 @login_required
 def post_edit(request, topic_id):
-    topic = get_object_or_404(Topic, pk=topic_id)
+    try:
+        topic = Topic.objects.select_related('author').get(pk=topic_id)
+    except Topic.DoesNotExist:
+        raise Http404
 
     form = CreateForm(request.POST)
     if not form.is_valid():
@@ -52,17 +235,13 @@ def post_edit(request, topic_id):
         errors = {'invalid_permission': u'没有权限修改该主题'}
         return get_edit(request, topic_id, errors=errors)
 
-    topic.title = form.cleaned_data.get('title')
-    topic.content = form.cleaned_data.get('content')
-    topic.updated = timezone.now()
-    topic.last_touched = timezone.now()
-    topic.save()
+    now = timezone.now()
+    Topic.objects.filter(pk=topic.id).update(updated=now, last_touched=now, **form.cleaned_data)
 
-    reputation = user.reputation
-    reputation = (reputation or 0) - 2 # 每次修改回复扣除用户威望2点
+    reputation = user.reputation or 0
+    reputation = reputation - 2 # 每次修改回复扣除用户威望2点
     reputation = 0 if reputation < 0 else reputation
-    user.reputation = reputation
-    user.save()
+    ForumUser.objects.filter(pk=user.id).update(reputation=reputation)
 
     return redirect('/t/%s/' % topic.id)
 
@@ -84,9 +263,12 @@ def get_reply_edit(request, reply_id, errors=None):
 
 @login_required
 def post_reply_edit(request, reply_id):
-    reply = get_object_or_404(Reply, pk=reply_id)
+    try:
+        topic = Topic.objects.select_related('author').get(pk=topic_id)
+    except Topic.DoesNotExist:
+        raise Http404
 
-    form = ReplyEditForm(request.POST)
+    form = ReplyForm(request.POST)
     if not form.is_valid():
         return get_reply_edit(request, reply_id, errors=form.errors)
 
@@ -95,15 +277,12 @@ def post_reply_edit(request, reply_id):
         errors = {'invalid_permission': u'没有权限修改该回复'}
         return get_reply_edit(request, reply_id, errors=errors)
 
-    reply.content = form.cleaned_data.get('content')
-    reply.updated = timezone.now()
-    reply.save()
+    Reply.objects.filter(pk=reply.id).update(updated=timezone.now(), **form.cleaned_data)
 
-    reputation = user.reputation
-    reputation = (reputation or 0) - 2 # 每次修改回复扣除用户威望2点
+    reputation = user.reputation or 0
+    reputation = reputation - 2 # 每次修改回复扣除用户威望2点
     reputation = 0 if reputation < 0 else reputation
-    user.reputation = reputation
-    user.save()
+    ForumUser.objects.filter(pk=user.id).update(reputation=reputation)
 
     return redirect('/t/%s/' % reply.topic.id)
 
@@ -248,7 +427,7 @@ def get_vote(request):
     topic = None
     if topic_id:
         try:
-            topic = Topic.objects.get_topic_by_topic_id(topic_id)
+            topic = Topic.objects.select_related('author').get(pk=topic_id)
         except Topic.DoesNotExist:
             pass
 
@@ -283,7 +462,7 @@ def get_vote(request):
     topic_time_diff = timezone.now() - topic.created
     reputation = topic.author.reputation or 0
     reputation = reputation + 2 * math.log((user.reputation or 0) + topic_time_diff.days + 10, 10)
-    topic.author.update(reputation=reputation)
+    ForumUser.objects.filter(pk=topic.author.id).update(reputation=reputation)
 
     return HttpResponse(json.dumps({
         'success': 1,
@@ -306,7 +485,7 @@ def get_favorite(request):
     topic = None
     if topic_id:
         try:
-            topic = Topic.objects.get_topic_by_topic_id(topic_id)
+            topic = Topic.objects.select_related('author').get(pk=topic_id)
         except Topic.DoesNotExist:
             pass
 
@@ -340,7 +519,7 @@ def get_favorite(request):
     topic_time_diff = timezone.now() - topic.created
     reputation = topic.author.reputation or 0
     reputation = reputation + 2 * math.log((user.reputation or 0) + topic_time_diff.days + 10, 10)
-    topic.author.update(reputation=reputation)
+    ForumUser.objects.filter(pk=topic.author.id).update(reputation=reputation)
 
     return HttpResponse(json.dumps({
         'success': 1,
@@ -363,7 +542,7 @@ def get_cancel_favorite(request):
     topic = None
     if topic_id:
         try:
-            topic = Topic.objects.get_topic_by_topic_id(topic_id)
+            topic = Topic.objects.select_related('author').get(pk=topic_id)
         except Topic.DoesNotExist:
             pass
 
@@ -390,7 +569,7 @@ def get_cancel_favorite(request):
     topic_time_diff = timezone.now() - topic.created
     reputation = topic.author.reputation or 0
     reputation = reputation + 2 * math.log(user.reputation or 0 + topic_time_diff.days + 10, 10)
-    topic.author.update(reputation=reputation)
+    ForumUser.objects.filter(pk=topic.author.id).update(reputation=reputation)
 
     return HttpResponse(json.dumps({
         'success': 1,

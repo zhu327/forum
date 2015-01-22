@@ -28,10 +28,10 @@
                     </a>
                     <div class="main">
                         {% ifequal notification.involved_type 0 %}
-                            <span class="title"><a href="/u/{{ notification.trigger_user.username }}/">{{ notification.trigger_user.username }}</a> 在 <a href="/t/{{ notification.involved_topic.id }}">{{ notification.involved_topic.title }}</a> 中提到了你</span>
+                            <span class="title"><a href="/u/{{ notification.trigger_user.username }}/">{{ notification.trigger_user.username }}</a> 在 <a href="/t/{{ notification.involved_topic.id }}/">{{ notification.involved_topic.title }}</a> 中提到了你</span>
                         {% endifequal %}
                         {% ifequal notification.involved_type 1 %}
-                            <span class="title"><a href="/u/{{ notification.trigger_user.username }}/">{{ notification.trigger_user.username }}</a> 回复了你的主题 <a href="/t/{{ notification.involved_topic.id }}">{{ notification.involved_topic.title }}</a></span>
+                            <span class="title"><a href="/u/{{ notification.trigger_user.username }}/">{{ notification.trigger_user.username }}</a> 回复了你的主题 <a href="/t/{{ notification.involved_topic.id }}/">{{ notification.involved_topic.title }}</a></span>
                         {% endifequal %}
                         <div class="content">{{ notification.content|markdown|content_process|safe }}</div>
                     </div>

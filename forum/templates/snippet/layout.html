@@ -1,4 +1,3 @@
-{% load forum_extras %}
 <!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
@@ -7,6 +6,7 @@
     <meta content="yes" name="apple-mobile-web-app-capable" />
     <meta content="black" name="apple-mobile-web-app-status-bar-style" />
     <meta name="format-detection" content="telephone=no" />
+    {% load forum_extras %}
     <title>{% block title %}F2E - 前端技术社区{% endblock %}</title>
     <script type="text/javascript" src="/static/js/base/jquery-1.8.3.min.js"></script>
     <script type="text/javascript" src="/static/js/base/bootstrap.min.js"></script>
@@ -143,7 +143,7 @@
                         </li>
                     {% else %}
                         <li>
-                            <a href="/login/">
+                            <a href="/login/?next={{ request.get_full_path }}">
                                 <span class="octicon octicon-log-in"></span>
                             </a>
                         </li>

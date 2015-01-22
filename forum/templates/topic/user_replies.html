@@ -16,7 +16,7 @@
                 <div class="reply-item">
                     <div class="main">
                         <span class="title">
-                            回复了 {{ reply.topic.author.username }} 创建的主题 <a href="/t/{{ reply.topic.id }}">{{ reply.topic.title }}</a>
+                            回复了 {{ reply.topic.author.username }} 创建的主题 <a href="/t/{{ reply.topic.id }}/">{{ reply.topic.title }}</a>
                         </span>
                         <div class="content">
                             {{ reply.content|markdown|content_process|safe }}

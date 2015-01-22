@@ -144,7 +144,7 @@ def content_process(content): #内容处理，把gist，微博图片什么的替
     # render sinaimg pictures
     content = re.sub(r'(http:\/\/\w+.sinaimg.cn\/.*?\.(jpg|gif|png))', r'<img src="\1" />', content)
     # render @ mention links
-    content = re.sub(r'@(\w+)(\s|)', r'@<a href="/u/\1">\1</a> ', content)
+    content = re.sub(r'@(\w+)(\s|)', r'<a href="/u/\1/">@\1</a> ', content)
     # render youku videos
     content = re.sub(r'http://v.youku.com/v_show/id_(\w+).html', r'<iframe height=498 width=510 src="http://player.youku.com/embed/\1" frameborder=0 allowfullscreen style="width:100%;max-width:510px;"></iframe>', content)
     return content
