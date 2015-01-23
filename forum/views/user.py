@@ -29,7 +29,10 @@ def post_setting(request):
     cd = copy.copy(form.cleaned_data)
     cd.pop('username')
     cd.pop('email')
-    ForumUser.objects.filter(pk=user.id).update(updated=timezone.now(), **cd)
+    for k, v in cd.iteritems():
+        setattr(user, k, v)
+    user.updated = timezone.now()
+    user.save()
     return get_setting(request, success_message=u'用户基本资料更新成功')
 
 
@@ -65,7 +68,7 @@ def post_setting_avatar(request):
     avatar_48x48.save(os.path.join(path, '../static/avatar/m_%s.png' % avatar_name), 'PNG')
     avatar_32x32.save(os.path.join(path, '../static/avatar/s_%s.png' % avatar_name), 'PNG')
     ForumUser.objects.filter(pk=user.id).update(updated=timezone.now(), avatar='%s.png' % avatar_name)
-    return get_setting_avatar(request)
+    return redirect('/setting/avatar/')
 
 
 @login_required
@@ -130,7 +133,7 @@ def post_login(request):
     auth.login(request, user)
 
     if user.is_staff:
-        return redirect(request.REQUEST.get('next', '/manager/admin/'))
+        return redirect(request.REQUEST.get('next', '/manage/admin/'))
 
     return redirect(request.REQUEST.get('next', '/'))
 

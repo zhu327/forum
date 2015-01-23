@@ -14,6 +14,22 @@
     {% endcomment %}
 
     <div class="topics container-box deprecated-mt10">
+        <div class="ui-header">
+            <div class="dropdown fr">
+                <a class="btn btn-small" type="button" href="###" data-toggle="dropdown">创建新主题</a>
+                <ul class="dropdown-menu" role="menu">
+                    <li role="presentation">
+                        {% for node in hot_nodes %}
+                        <a role="menuitem" href="/t/create/{{ node.slug }}/">{{ node.name }}</a>
+                        {% endfor %}
+                    </li>
+                </ul>
+            </div>
+            <span class="bread-nav">
+                {# 在这里写你自己写推荐的node,或者其它链接,参考F2E.im #}
+                <a class="node-link" href="/node/share/">分享</a>
+            </span>
+        </div>
         {% for topic in topics %}
             <div class="topic-item">
                 <a href="/u/{{ topic.author.username }}/">
@@ -21,7 +37,7 @@
                 </a>
                 <div class="main">
                     <h3 class="title">
-                        <a href="/t/{{ topic.id }}#reply{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}/">{{ topic.title }}</a>
+                        <a href="/t/{{ topic.id }}/">{{ topic.title }}</a>
                     </h3>
                     <div class="meta">
                         <span class="node"><a href="/node/{{ topic.node.slug }}/">{{ topic.node.name }}</a></span> •
@@ -42,7 +58,7 @@
                 </div>
                 {% if topic.reply_count %}
                     <div class="count">
-                        <a href="/t/{{ topic.id }}#reply{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}/">{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}</a>
+                        <a href="/t/{{ topic.id }}/#reply{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}">{% if topic.reply_count %}{{ topic.reply_count }}{% else %}0{% endif %}</a>
                     </div>
                 {% endif %}
             </div>
@@ -112,7 +128,7 @@
     {% else %}
         <div class="login-box container-box">
             <div class="ui-content tc">
-                <a class="btn btn-small mr10" type="button" href="/login/?next={{ request.get_full_path }}">登录</a>
+                <a class="btn btn-small mr10" type="button" href="/login/">登录</a>
                 <a class="btn btn-small mr10" type="button" href="/register/">注册</a>
                 <a class="btn btn-small" type="button" href="/forgot/">找回密码</a>
             </div>

@@ -1,8 +1,9 @@
 # coding: utf-8
 
+from django.contrib.auth.backends import ModelBackend # 继承这个为了使用admin的权限控制
 from forum.models import ForumUser
 
-class EmailAuthBackend(object):
+class EmailAuthBackend(ModelBackend):
 
     def authenticate(self, username=None, password=None):
         try:

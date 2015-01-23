@@ -32,7 +32,7 @@ def get_index(request):
 
     current_page = int(request.GET.get('p', '1'))
     topics, topic_page = Topic.objects.get_all_topic(current_page=current_page)
-    planes = Plane.objects.all()
+    planes = Plane.objects.all().prefetch_related('node_set')
     hot_nodes = Node.objects.get_all_hot_nodes()
     active_page = 'topic'
     return render_to_response('topic/topics.html', locals(),
@@ -72,7 +72,7 @@ def get_view(request, topic_id, errors=None):
 @login_required
 def post_view(request, topic_id):
     try:
-        topic = Topic.objects.get_topic_by_topic_id(topic_id)
+        topic = Topic.objects.select_related('author').get(pk=topic_id)
     except Topic.DoesNotExist:
         raise Http404
     form = ReplyForm(request.POST)
@@ -81,15 +81,15 @@ def post_view(request, topic_id):
 
     user = request.user
     try:
-        last_reply = topic.reply_set.all().order_by('-created')[0]
+        last_reply = topic.reply_set.select_related('author').all().order_by('-created')[0]
     except IndexError:
         last_reply = None
     if last_reply:
-        last_replied_fingerprint = hashlib.sha1(str(last_reply.topic.id) + str(last_reply.author.id) + last_reply.content).hexdigest()
-        new_replied_fingerprint = hashlib.sha1(str(topic_id) + str(user.id) + form.cleaned_data.get('content')).hexdigest()
+        last_replied_fingerprint = hashlib.sha1(str(topic.id) + str(last_reply.author.id) + last_reply.content).hexdigest()
+        new_replied_fingerprint = hashlib.sha1(str(topic.id) + str(user.id) + form.cleaned_data.get('content')).hexdigest()
         if last_replied_fingerprint == new_replied_fingerprint:
-            errors = {'duplicated_reply': u'回复重复提交'}
-            return get_view(request, topic_id, errors=errors)
+            errors = {'duplicated_reply': [u'回复重复提交']}
+            return get_view(request, topic.id, errors=errors)
 
     now = timezone.now()
     reply = Reply(
@@ -113,7 +113,7 @@ def post_view(request, topic_id):
         )
         notification.save()
 
-    mentions = list(set(find_mentions(form.cleaned_data.get('content'))))
+    mentions = find_mentions(form.cleaned_data.get('content'))
     if user.username in mentions:
         mentions.remove(user.username)
     if topic.author.username in mentions:
@@ -139,7 +139,7 @@ def post_view(request, topic_id):
         reputation = reputation + 2 * math.log(user.reputation or 0 + topic_time_diff.days + 10, 10)
         ForumUser.objects.filter(pk=topic.author.id).update(reputation=reputation)
 
-    return redirect('/t/%s#reply%s' % (topic.id, topic.reply_count + 1))
+    return redirect('/t/%s/#reply%s' % (topic.id, topic.reply_count + 1))
 
 
 @login_required
@@ -168,7 +168,7 @@ def post_create(request, slug=None):
 
     user = request.user
     try:
-        last_created = user.topic_author.all().order_by('-created')[0]
+        last_created = user.topic_author.select_related('node').all().order_by('-created')[0]
     except IndexError:
         last_created = None
 
@@ -179,7 +179,7 @@ def post_create(request, slug=None):
             form.cleaned_data.get('content') + str(node.id)).hexdigest()
 
         if last_created_fingerprint == new_created_fingerprint:
-            errors = {'duplicated_topic': u'帖子重复提交'}
+            errors = {'duplicated_topic': [u'帖子重复提交']}
             return get_create(request, slug=slug, errors=errors)
 
     now = timezone.now()
@@ -232,7 +232,7 @@ def post_edit(request, topic_id):
 
     user = request.user
     if topic.author.id != user.id:
-        errors = {'invalid_permission': u'没有权限修改该主题'}
+        errors = {'invalid_permission': [u'没有权限修改该主题']}
         return get_edit(request, topic_id, errors=errors)
 
     now = timezone.now()
@@ -264,8 +264,8 @@ def get_reply_edit(request, reply_id, errors=None):
 @login_required
 def post_reply_edit(request, reply_id):
     try:
-        topic = Topic.objects.select_related('author').get(pk=topic_id)
-    except Topic.DoesNotExist:
+        reply = Reply.objects.select_related('author').get(pk=reply_id)
+    except Reply.DoesNotExist:
         raise Http404
 
     form = ReplyForm(request.POST)
@@ -274,7 +274,7 @@ def post_reply_edit(request, reply_id):
 
     user = request.user
     if reply.author.id != user.id:
-        errors = {'invalid_permission': u'没有权限修改该回复'}
+        errors = {'invalid_permission': [u'没有权限修改该回复']}
         return get_reply_edit(request, reply_id, errors=errors)
 
     Reply.objects.filter(pk=reply.id).update(updated=timezone.now(), **form.cleaned_data)
@@ -568,7 +568,7 @@ def get_cancel_favorite(request):
     # 更新话题作者声誉
     topic_time_diff = timezone.now() - topic.created
     reputation = topic.author.reputation or 0
-    reputation = reputation + 2 * math.log(user.reputation or 0 + topic_time_diff.days + 10, 10)
+    reputation = reputation - math.log(user.reputation or 0 + topic_time_diff.days + 10, 15)
     ForumUser.objects.filter(pk=topic.author.id).update(reputation=reputation)
 
     return HttpResponse(json.dumps({

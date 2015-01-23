@@ -157,7 +157,7 @@
         </div>
         <div class="ui-content">
             {% for reply in replies %}
-                <div class="reply-item">
+                <div id="reply{{ floor|add:forloop.counter }}" class="reply-item">
                     <a href="/u/{{ reply.author.username }}/">
                         <img src="/static/avatar/m_{% if reply.author.avatar %}{{ reply.author.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
                     </a>

@@ -36,7 +36,7 @@
                     </div>
                     {% if favorite.involved_topic.reply_count %}
                         <div class="count">
-                            <a href="/t/{{ favorite.involved_topic.id }}#reply{% if favorite.involved_topic.reply_count %}{{ favorite.involved_topic.reply_count }}{% else %}0{% endif %}/">{% if favorite.involved_topic.reply_count %}{{ favorite.involved_topic.reply_count }}{% else %}0{% endif %}</a>
+                            <a href="/t/{{ favorite.involved_topic.id }}/#reply{% if favorite.involved_topic.reply_count %}{{ favorite.involved_topic.reply_count }}{% else %}0{% endif %}">{% if favorite.involved_topic.reply_count %}{{ favorite.involved_topic.reply_count }}{% else %}0{% endif %}</a>
                         </div>
                     {% endif %}
                 </div>

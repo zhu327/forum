@@ -23,4 +23,4 @@ def sendmail(title, content, to):
 
 def find_mentions(content):
     regex = re.compile(ur'@(?P<username>\w+)(\s|$)', re.I)
-    return [m.group('username') for m in regex.finditer(content)]
+    return set([m.group('username') for m in regex.finditer(content)])

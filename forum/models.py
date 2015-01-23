@@ -24,7 +24,7 @@ class Pages(object):
             self.end = self.size + self.start
             self.index = self._current
         self.prev = self.index - 1 if self.index > 1 else self.index
-        self.next = slef.index + 1 if self.index < self.pages else self.index
+        self.next = self.index + 1 if self.index < self.pages else self.index
 
 
 # 数据库字段类型定义
