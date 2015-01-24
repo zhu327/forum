@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from forum.forms.user import LoginForm
 
 from views import common, user, topic, notification
+from forum.sitemap import TopicSitemap
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
@@ -39,4 +40,6 @@ urlpatterns = patterns('',
     url(r'^login/$', common.method_splitter, {'GET': user.get_login, 'POST': user.post_login}),
     url(r'^logout/$', common.method_splitter, {'GET': user.get_logout}),
     url(r'^register/$', common.method_splitter, {'GET': user.get_register, 'POST': user.post_register}),
+
+    url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': {'topics': TopicSitemap}}),
 )

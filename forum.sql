@@ -66,7 +66,7 @@ CREATE TABLE `auth_group_permissions` (
 
 LOCK TABLES `auth_group_permissions` WRITE;
 /*!40000 ALTER TABLE `auth_group_permissions` DISABLE KEYS */;
-INSERT INTO `auth_group_permissions` VALUES (1,1,17),(2,1,19),(3,1,20),(4,1,21),(5,1,22),(6,1,23),(7,1,24),(8,1,26),(9,1,27),(10,1,29),(11,1,30),(12,2,26),(13,2,27),(14,2,29),(15,2,30);
+INSERT INTO `auth_group_permissions` VALUES (3,1,20),(4,1,22),(5,1,23),(6,1,24),(7,1,25),(8,1,26),(9,1,27),(10,1,29),(11,1,30),(1,1,32),(2,1,33),(14,2,29),(15,2,30),(12,2,32),(13,2,33);
 /*!40000 ALTER TABLE `auth_group_permissions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -86,7 +86,7 @@ CREATE TABLE `auth_permission` (
   UNIQUE KEY `content_type_id` (`content_type_id`,`codename`),
   KEY `auth_permission_37ef4eb4` (`content_type_id`),
   CONSTRAINT `content_type_id_refs_id_d043b34a` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +95,7 @@ CREATE TABLE `auth_permission` (
 
 LOCK TABLES `auth_permission` WRITE;
 /*!40000 ALTER TABLE `auth_permission` DISABLE KEYS */;
-INSERT INTO `auth_permission` VALUES (1,'Can add permission',1,'add_permission'),(2,'Can change permission',1,'change_permission'),(3,'Can delete permission',1,'delete_permission'),(4,'Can add group',2,'add_group'),(5,'Can change group',2,'change_group'),(6,'Can delete group',2,'delete_group'),(7,'Can add content type',3,'add_contenttype'),(8,'Can change content type',3,'change_contenttype'),(9,'Can delete content type',3,'delete_contenttype'),(10,'Can add session',4,'add_session'),(11,'Can change session',4,'change_session'),(12,'Can delete session',4,'delete_session'),(13,'Can add log entry',5,'add_logentry'),(14,'Can change log entry',5,'change_logentry'),(15,'Can delete log entry',5,'delete_logentry'),(16,'Can add user',6,'add_forumuser'),(17,'Can change user',6,'change_forumuser'),(18,'Can delete user',6,'delete_forumuser'),(19,'Can add plane',7,'add_plane'),(20,'Can change plane',7,'change_plane'),(21,'Can delete plane',7,'delete_plane'),(22,'Can add node',8,'add_node'),(23,'Can change node',8,'change_node'),(24,'Can delete node',8,'delete_node'),(25,'Can add topic',9,'add_topic'),(26,'Can change topic',9,'change_topic'),(27,'Can delete topic',9,'delete_topic'),(28,'Can add reply',10,'add_reply'),(29,'Can change reply',10,'change_reply'),(30,'Can delete reply',10,'delete_reply'),(31,'Can add favorite',11,'add_favorite'),(32,'Can change favorite',11,'change_favorite'),(33,'Can delete favorite',11,'delete_favorite'),(34,'Can add notification',12,'add_notification'),(35,'Can change notification',12,'change_notification'),(36,'Can delete notification',12,'delete_notification'),(37,'Can add transaction',13,'add_transaction'),(38,'Can change transaction',13,'change_transaction'),(39,'Can delete transaction',13,'delete_transaction'),(40,'Can add vote',14,'add_vote'),(41,'Can change vote',14,'change_vote'),(42,'Can delete vote',14,'delete_vote');
+INSERT INTO `auth_permission` VALUES (1,'Can add permission',1,'add_permission'),(2,'Can change permission',1,'change_permission'),(3,'Can delete permission',1,'delete_permission'),(4,'Can add group',2,'add_group'),(5,'Can change group',2,'change_group'),(6,'Can delete group',2,'delete_group'),(7,'Can add content type',3,'add_contenttype'),(8,'Can change content type',3,'change_contenttype'),(9,'Can delete content type',3,'delete_contenttype'),(10,'Can add session',4,'add_session'),(11,'Can change session',4,'change_session'),(12,'Can delete session',4,'delete_session'),(13,'Can add site',5,'add_site'),(14,'Can change site',5,'change_site'),(15,'Can delete site',5,'delete_site'),(16,'Can add log entry',6,'add_logentry'),(17,'Can change log entry',6,'change_logentry'),(18,'Can delete log entry',6,'delete_logentry'),(19,'Can add user',7,'add_forumuser'),(20,'Can change user',7,'change_forumuser'),(21,'Can delete user',7,'delete_forumuser'),(22,'Can add plane',8,'add_plane'),(23,'Can change plane',8,'change_plane'),(24,'Can delete plane',8,'delete_plane'),(25,'Can add node',9,'add_node'),(26,'Can change node',9,'change_node'),(27,'Can delete node',9,'delete_node'),(28,'Can add topic',10,'add_topic'),(29,'Can change topic',10,'change_topic'),(30,'Can delete topic',10,'delete_topic'),(31,'Can add reply',11,'add_reply'),(32,'Can change reply',11,'change_reply'),(33,'Can delete reply',11,'delete_reply'),(34,'Can add favorite',12,'add_favorite'),(35,'Can change favorite',12,'change_favorite'),(36,'Can delete favorite',12,'delete_favorite'),(37,'Can add notification',13,'add_notification'),(38,'Can change notification',13,'change_notification'),(39,'Can delete notification',13,'delete_notification'),(40,'Can add transaction',14,'add_transaction'),(41,'Can change transaction',14,'change_transaction'),(42,'Can delete transaction',14,'delete_transaction'),(43,'Can add vote',15,'add_vote'),(44,'Can change vote',15,'change_vote'),(45,'Can delete vote',15,'delete_vote');
 /*!40000 ALTER TABLE `auth_permission` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -146,7 +146,7 @@ CREATE TABLE `django_content_type` (
   `model` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `app_label` (`app_label`,`model`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -155,7 +155,7 @@ CREATE TABLE `django_content_type` (
 
 LOCK TABLES `django_content_type` WRITE;
 /*!40000 ALTER TABLE `django_content_type` DISABLE KEYS */;
-INSERT INTO `django_content_type` VALUES (1,'permission','auth','permission'),(2,'group','auth','group'),(3,'content type','contenttypes','contenttype'),(4,'session','sessions','session'),(5,'log entry','admin','logentry'),(6,'user','forum','forumuser'),(7,'plane','forum','plane'),(8,'node','forum','node'),(9,'topic','forum','topic'),(10,'reply','forum','reply'),(11,'favorite','forum','favorite'),(12,'notification','forum','notification'),(13,'transaction','forum','transaction'),(14,'vote','forum','vote');
+INSERT INTO `django_content_type` VALUES (1,'permission','auth','permission'),(2,'group','auth','group'),(3,'content type','contenttypes','contenttype'),(4,'session','sessions','session'),(5,'site','sites','site'),(6,'log entry','admin','logentry'),(7,'user','forum','forumuser'),(8,'plane','forum','plane'),(9,'node','forum','node'),(10,'topic','forum','topic'),(11,'reply','forum','reply'),(12,'favorite','forum','favorite'),(13,'notification','forum','notification'),(14,'transaction','forum','transaction'),(15,'vote','forum','vote');
 /*!40000 ALTER TABLE `django_content_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -182,6 +182,31 @@ CREATE TABLE `django_session` (
 LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `django_site`
+--
+
+DROP TABLE IF EXISTS `django_site`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `django_site` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `domain` varchar(100) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `django_site`
+--
+
+LOCK TABLES `django_site` WRITE;
+/*!40000 ALTER TABLE `django_site` DISABLE KEYS */;
+INSERT INTO `django_site` VALUES (1,'127.0.0.1:8000','127.0.0.1:8000');
+/*!40000 ALTER TABLE `django_site` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -261,7 +286,7 @@ CREATE TABLE `forum_forumuser` (
 
 LOCK TABLES `forum_forumuser` WRITE;
 /*!40000 ALTER TABLE `forum_forumuser` DISABLE KEYS */;
-INSERT INTO `forum_forumuser` VALUES (1,'pbkdf2_sha256$10000$MeGMPC6hD1Pr$EweuoezP/1zlWZnAzqQ6kzSEg72AvQIpFidEF7+yPGU=','2015-01-23 13:36:57',1,'admin','','','admin@forum.com',1,1,'2015-01-23 13:35:27',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `forum_forumuser` VALUES (1,'pbkdf2_sha256$10000$XrM3VzlNjIGb$PdNvocIayGIQhbAnVXa1NMSRxXZ1894l/+6vhF4XOu0=','2015-01-24 08:10:56',1,'admin','','','admin@forum.com',1,1,'2015-01-24 08:10:33',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `forum_forumuser` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -580,4 +605,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-01-23 21:41:47
+-- Dump completed on 2015-01-24 16:14:10

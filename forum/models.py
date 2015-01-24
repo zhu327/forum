@@ -52,7 +52,7 @@ class TopicManager(models.Manager):
     '''
     Topic objects
     '''
-    def get_all_topic(self, num=36, current_page=1):
+    def get_all_topic(self, num=36, current_page=1): # 可以考虑在这里过滤掉没有头像的用户发帖，不显示在主页
         count = self.get_query_set().count()
         page = Pages(count, current_page, num)
         query = self.get_query_set().select_related('node', 'author', 'last_replied_by').\
@@ -159,9 +159,6 @@ class Plane(models.Model):
     created = models.DateTimeField(null=True, blank=True)
     updated = models.DateTimeField(null=True, blank=True)
 
-    def __unicode__(self):
-        return self.name
-
 
 class Node(models.Model):
     '''
@@ -179,9 +176,6 @@ class Node(models.Model):
     limit_reputation = models.IntegerField(null=True, blank=True) # 最小声誉，估计是权限控制
 
     objects = NodeManager()
-
-    def __unicode__(self):
-        return self.name
 
 
 class Topic(models.Model):
@@ -204,9 +198,6 @@ class Topic(models.Model):
     last_touched = models.DateTimeField(null=True, blank=True)
 
     objects = TopicManager()
-
-    def __unicode__(self):
-        return self.title
 
 
 class Reply(models.Model):

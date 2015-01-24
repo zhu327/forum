@@ -67,8 +67,10 @@ def post_setting_avatar(request):
     avatar_96x96.save(os.path.join(path, '../static/avatar/b_%s.png' % avatar_name), 'PNG')
     avatar_48x48.save(os.path.join(path, '../static/avatar/m_%s.png' % avatar_name), 'PNG')
     avatar_32x32.save(os.path.join(path, '../static/avatar/s_%s.png' % avatar_name), 'PNG')
-    ForumUser.objects.filter(pk=user.id).update(updated=timezone.now(), avatar='%s.png' % avatar_name)
-    return redirect('/setting/avatar/')
+    user.avatar = '%s.png' % avatar_name
+    user.updated = timezone.now()
+    user.save()
+    return get_setting_avatar(request)
 
 
 @login_required
