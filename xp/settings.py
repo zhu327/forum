@@ -182,6 +182,8 @@ CACHES = { # memcached缓存设置
     }
 }
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache' # 使用memcached存储session
+
 # 自定义User类
 AUTH_USER_MODEL = 'forum.ForumUser'
 
