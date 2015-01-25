@@ -3,6 +3,8 @@ import os
 import sys
 reload(sys)
 sys.setdefaultencoding("utf8")
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'site-packages.zip'))
+
 
 if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "xp.settings")

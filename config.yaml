@@ -1,0 +1,19 @@
+name: way2go
+version: 1
+worker: gevent
+libraries:
+- name: "gevent"
+  version: "1.0rc2"
+- name: "django"
+  version: "1.5"
+- name: "MySQLdb"
+  version: "1.2.3"
+- name: "PIL"
+  version: "1.1.7"
+handlers:
+- url: /static/
+  static_path: forum/static
+  gzip: on
+- url: /favicon.ico
+  static_path: forum/static/favicon.ico
+  gzip: on

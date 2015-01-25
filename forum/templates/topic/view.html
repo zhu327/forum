@@ -108,7 +108,7 @@
     <div class="topic-detail container-box">
         <div class="ui-header">
             <a href="/u/{% if topic.author.username %}{{ topic.author.username }}{% else %}{{ topic.author.id }}{% endif %}/">
-                <img src="/static/avatar/m_{% if topic.author.avatar %}{{ topic.author.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
+                <img src="{% if topic.author.avatar %}{{ topic.author.avatar }}?imageView2/0/w/48/h/48{% else %}/static/avatar/m_default.png{% endif %}" alt="" class="avatar" />
             </a>
             <div class="main">
                 <h3 class="title">{{ topic.title }}</h3>
@@ -159,7 +159,7 @@
             {% for reply in replies %}
                 <div id="reply{{ floor|add:forloop.counter }}" class="reply-item">
                     <a href="/u/{{ reply.author.username }}/">
-                        <img src="/static/avatar/m_{% if reply.author.avatar %}{{ reply.author.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
+                        <img src="{% if reply.author.avatar %}{{ reply.author.avatar }}?imageView2/0/w/48/h/48{% else %}/static/avatar/m_default.png{% endif %}" alt="" class="avatar" />
                     </a>
                     <div class="main">
                         <div class="meta">
@@ -226,7 +226,7 @@
         <div class="usercard container-box">
             <div class="ui-header">
                 <a href="/u/{{ user.username }}/">
-                    <img src="/static/avatar/m_{% if user.avatar %}{{ user.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
+                    <img src="{% if user.avatar %}{{ user.avatar }}?imageView2/0/w/48/h/48{% else %}/static/avatar/m_default.png{% endif %}" alt="" class="avatar" />
                 </a>
                 <div class="username">{{ user.username }}</div>
                 <div class="website"><a href="{% if user.website %}{{ user.website }}{% endif %}">{% if user.website %}{{ user.website }}{% endif %}</a></div>

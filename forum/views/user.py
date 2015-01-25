@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext, Context, loader
 from django.utils import timezone
 from django.conf import settings
+from qiniu import Auth, put_data
 from forum.models import ForumUser
 from forum.forms.user import RegisterForm, LoginForm, ForgotPasswordForm, SettingPasswordForm, SettingForm
 from common import sendmail
@@ -50,9 +51,7 @@ def post_setting_avatar(request):
 
     user = request.user
     avatar_name = '%s' % uuid.uuid5(uuid.NAMESPACE_DNS, str(user.id))
-    avatar_raw = request.FILES['avatar'].read()
-    avatar_buffer = StringIO.StringIO(avatar_raw)
-    avatar = Image.open(avatar_buffer)
+    avatar = Image.open(request.FILES['avatar'])
 
     # crop avatar if it's not square
     avatar_w, avatar_h = avatar.size
@@ -61,13 +60,12 @@ def post_setting_avatar(request):
     avatar = avatar.crop(avatar_crop_region)
 
     avatar_96x96 = avatar.resize((96, 96), Image.ANTIALIAS)
-    avatar_48x48 = avatar.resize((48, 48), Image.ANTIALIAS)
-    avatar_32x32 = avatar.resize((32, 32), Image.ANTIALIAS)
-    path = os.path.dirname(__file__)
-    avatar_96x96.save(os.path.join(path, '../static/avatar/b_%s.png' % avatar_name), 'PNG')
-    avatar_48x48.save(os.path.join(path, '../static/avatar/m_%s.png' % avatar_name), 'PNG')
-    avatar_32x32.save(os.path.join(path, '../static/avatar/s_%s.png' % avatar_name), 'PNG')
-    user.avatar = '%s.png' % avatar_name
+    f = StringIO.StringIO()
+    avatar_96x96.save(f, 'PNG')
+    q = Auth(settings.QINIU_ACCESS_KEY, settings.QINIU_SECRET_KEY)
+    token = q.upload_token(settings.QINIU_BUCKET_NAME)
+    ret, info = put_data(token, avatar_name, f.getvalue(), mime_type='image/png', check_crc=True)
+    user.avatar = 'http://%s/%s' % (settings.QINIU_BUCKET_DOMAIN, avatar_name)
     user.updated = timezone.now()
     user.save()
     return get_setting_avatar(request)

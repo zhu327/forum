@@ -1,5 +1,8 @@
 # coding: utf-8
 # Django settings for xp project.
+import os
+import sae.const
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -13,13 +16,13 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'forum',                      # Or path to database file if using sqlite3.
+        'NAME': sae.const.MYSQL_DB,                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '3306',                      # Set to empty string for default.
-    }
+        'USER': sae.const.MYSQL_USER,
+        'PASSWORD': sae.const.MYSQL_PASS,
+        'HOST': sae.const.MYSQL_HOST,                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': int(sae.const.MYSQL_PORT),                      # Set to empty string for default.
+    },
 }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
@@ -62,7 +65,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = os.path.join(os.path.dirname(__file__), '../forum/static')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -175,9 +178,11 @@ LOGGING = {
     }
 }
 
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 上传最大10M
+
 CACHES = { # memcached缓存设置
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache', # SAE使用pylibmc
         'LOCATION': '127.0.0.1:11211',
     }
 }
@@ -194,6 +199,7 @@ AUTHENTICATION_BACKENDS = ('forum.backends.EmailAuthBackend',)
 LOGIN_URL = '/login/'
 
 # 发送邮件设置
+EMAIL_BACKEND = 'sae.ext.django.mail.backend.EmailBackend'
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 25
 EMAIL_HOST_USER= '*********'
@@ -202,3 +208,9 @@ DEFAULT_FROM_EMAIL = '*********@qq.com'
 
 # 注册用户保留关键字，非Django设置
 RESERVED = ["user", "topic", "home", "setting", "forgot", "login", "logout", "register", "admin"]
+
+# 头像存储使用七牛
+QINIU_ACCESS_KEY = '******'
+QINIU_SECRET_KEY = '******'
+QINIU_BUCKET_NAME = '******'
+QINIU_BUCKET_DOMAIN = '******'

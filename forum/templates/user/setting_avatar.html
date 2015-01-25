@@ -13,9 +13,9 @@
                     <!-- Avatar -->
                     <label class="control-label" for="username">头像</label>
                     <div class="controls">
-                        <img src="/static/avatar/b_{% if user.avatar %}{{ user.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
-                        <img src="/static/avatar/m_{% if user.avatar %}{{ user.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
-                        <img src="/static/avatar/s_{% if user.avatar %}{{ user.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
+                        <img src="{% if user.avatar %}{{ user.avatar }}{% else %}/static/avatar/b_default.png{% endif %}" alt="" class="avatar" />
+                        <img src="{% if user.avatar %}{{ user.avatar }}?imageView2/0/w/48/h/48{% else %}/static/avatar/m_default.png{% endif %}" alt="" class="avatar" />
+                        <img src="{% if user.avatar %}{{ user.avatar }}?imageView2/0/w/32/h/32{% else %}/static/avatar/s_default.png{% endif %}" alt="" class="avatar" />
                         <a href="/setting/avatar/">设置头像</a>
                     </div>
                 </div>

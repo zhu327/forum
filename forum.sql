@@ -34,11 +34,9 @@ CREATE TABLE `auth_group` (
 -- Dumping data for table `auth_group`
 --
 
-LOCK TABLES `auth_group` WRITE;
 /*!40000 ALTER TABLE `auth_group` DISABLE KEYS */;
 INSERT INTO `auth_group` VALUES (2,'版主'),(1,'管理员');
 /*!40000 ALTER TABLE `auth_group` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `auth_group_permissions`
@@ -64,11 +62,9 @@ CREATE TABLE `auth_group_permissions` (
 -- Dumping data for table `auth_group_permissions`
 --
 
-LOCK TABLES `auth_group_permissions` WRITE;
 /*!40000 ALTER TABLE `auth_group_permissions` DISABLE KEYS */;
 INSERT INTO `auth_group_permissions` VALUES (3,1,20),(4,1,22),(5,1,23),(6,1,24),(7,1,25),(8,1,26),(9,1,27),(10,1,29),(11,1,30),(1,1,32),(2,1,33),(14,2,29),(15,2,30),(12,2,32),(13,2,33);
 /*!40000 ALTER TABLE `auth_group_permissions` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `auth_permission`
@@ -93,11 +89,9 @@ CREATE TABLE `auth_permission` (
 -- Dumping data for table `auth_permission`
 --
 
-LOCK TABLES `auth_permission` WRITE;
 /*!40000 ALTER TABLE `auth_permission` DISABLE KEYS */;
 INSERT INTO `auth_permission` VALUES (1,'Can add permission',1,'add_permission'),(2,'Can change permission',1,'change_permission'),(3,'Can delete permission',1,'delete_permission'),(4,'Can add group',2,'add_group'),(5,'Can change group',2,'change_group'),(6,'Can delete group',2,'delete_group'),(7,'Can add content type',3,'add_contenttype'),(8,'Can change content type',3,'change_contenttype'),(9,'Can delete content type',3,'delete_contenttype'),(10,'Can add session',4,'add_session'),(11,'Can change session',4,'change_session'),(12,'Can delete session',4,'delete_session'),(13,'Can add site',5,'add_site'),(14,'Can change site',5,'change_site'),(15,'Can delete site',5,'delete_site'),(16,'Can add log entry',6,'add_logentry'),(17,'Can change log entry',6,'change_logentry'),(18,'Can delete log entry',6,'delete_logentry'),(19,'Can add user',7,'add_forumuser'),(20,'Can change user',7,'change_forumuser'),(21,'Can delete user',7,'delete_forumuser'),(22,'Can add plane',8,'add_plane'),(23,'Can change plane',8,'change_plane'),(24,'Can delete plane',8,'delete_plane'),(25,'Can add node',9,'add_node'),(26,'Can change node',9,'change_node'),(27,'Can delete node',9,'delete_node'),(28,'Can add topic',10,'add_topic'),(29,'Can change topic',10,'change_topic'),(30,'Can delete topic',10,'delete_topic'),(31,'Can add reply',11,'add_reply'),(32,'Can change reply',11,'change_reply'),(33,'Can delete reply',11,'delete_reply'),(34,'Can add favorite',12,'add_favorite'),(35,'Can change favorite',12,'change_favorite'),(36,'Can delete favorite',12,'delete_favorite'),(37,'Can add notification',13,'add_notification'),(38,'Can change notification',13,'change_notification'),(39,'Can delete notification',13,'delete_notification'),(40,'Can add transaction',14,'add_transaction'),(41,'Can change transaction',14,'change_transaction'),(42,'Can delete transaction',14,'delete_transaction'),(43,'Can add vote',15,'add_vote'),(44,'Can change vote',15,'change_vote'),(45,'Can delete vote',15,'delete_vote');
 /*!40000 ALTER TABLE `auth_permission` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `django_admin_log`
@@ -127,10 +121,8 @@ CREATE TABLE `django_admin_log` (
 -- Dumping data for table `django_admin_log`
 --
 
-LOCK TABLES `django_admin_log` WRITE;
 /*!40000 ALTER TABLE `django_admin_log` DISABLE KEYS */;
 /*!40000 ALTER TABLE `django_admin_log` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `django_content_type`
@@ -153,11 +145,9 @@ CREATE TABLE `django_content_type` (
 -- Dumping data for table `django_content_type`
 --
 
-LOCK TABLES `django_content_type` WRITE;
 /*!40000 ALTER TABLE `django_content_type` DISABLE KEYS */;
 INSERT INTO `django_content_type` VALUES (1,'permission','auth','permission'),(2,'group','auth','group'),(3,'content type','contenttypes','contenttype'),(4,'session','sessions','session'),(5,'site','sites','site'),(6,'log entry','admin','logentry'),(7,'user','forum','forumuser'),(8,'plane','forum','plane'),(9,'node','forum','node'),(10,'topic','forum','topic'),(11,'reply','forum','reply'),(12,'favorite','forum','favorite'),(13,'notification','forum','notification'),(14,'transaction','forum','transaction'),(15,'vote','forum','vote');
 /*!40000 ALTER TABLE `django_content_type` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `django_session`
@@ -179,10 +169,8 @@ CREATE TABLE `django_session` (
 -- Dumping data for table `django_session`
 --
 
-LOCK TABLES `django_session` WRITE;
 /*!40000 ALTER TABLE `django_session` DISABLE KEYS */;
 /*!40000 ALTER TABLE `django_session` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `django_site`
@@ -203,11 +191,9 @@ CREATE TABLE `django_site` (
 -- Dumping data for table `django_site`
 --
 
-LOCK TABLES `django_site` WRITE;
 /*!40000 ALTER TABLE `django_site` DISABLE KEYS */;
 INSERT INTO `django_site` VALUES (1,'127.0.0.1:8000','127.0.0.1:8000');
 /*!40000 ALTER TABLE `django_site` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `forum_favorite`
@@ -237,10 +223,8 @@ CREATE TABLE `forum_favorite` (
 -- Dumping data for table `forum_favorite`
 --
 
-LOCK TABLES `forum_favorite` WRITE;
 /*!40000 ALTER TABLE `forum_favorite` DISABLE KEYS */;
 /*!40000 ALTER TABLE `forum_favorite` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `forum_forumuser`
@@ -284,11 +268,9 @@ CREATE TABLE `forum_forumuser` (
 -- Dumping data for table `forum_forumuser`
 --
 
-LOCK TABLES `forum_forumuser` WRITE;
 /*!40000 ALTER TABLE `forum_forumuser` DISABLE KEYS */;
 INSERT INTO `forum_forumuser` VALUES (1,'pbkdf2_sha256$10000$XrM3VzlNjIGb$PdNvocIayGIQhbAnVXa1NMSRxXZ1894l/+6vhF4XOu0=','2015-01-24 08:10:56',1,'admin','','','admin@forum.com',1,1,'2015-01-24 08:10:33',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `forum_forumuser` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `forum_forumuser_groups`
@@ -314,10 +296,8 @@ CREATE TABLE `forum_forumuser_groups` (
 -- Dumping data for table `forum_forumuser_groups`
 --
 
-LOCK TABLES `forum_forumuser_groups` WRITE;
 /*!40000 ALTER TABLE `forum_forumuser_groups` DISABLE KEYS */;
 /*!40000 ALTER TABLE `forum_forumuser_groups` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `forum_forumuser_user_permissions`
@@ -343,10 +323,8 @@ CREATE TABLE `forum_forumuser_user_permissions` (
 -- Dumping data for table `forum_forumuser_user_permissions`
 --
 
-LOCK TABLES `forum_forumuser_user_permissions` WRITE;
 /*!40000 ALTER TABLE `forum_forumuser_user_permissions` DISABLE KEYS */;
 /*!40000 ALTER TABLE `forum_forumuser_user_permissions` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `forum_node`
@@ -377,10 +355,8 @@ CREATE TABLE `forum_node` (
 -- Dumping data for table `forum_node`
 --
 
-LOCK TABLES `forum_node` WRITE;
 /*!40000 ALTER TABLE `forum_node` DISABLE KEYS */;
 /*!40000 ALTER TABLE `forum_node` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `forum_notification`
@@ -415,10 +391,8 @@ CREATE TABLE `forum_notification` (
 -- Dumping data for table `forum_notification`
 --
 
-LOCK TABLES `forum_notification` WRITE;
 /*!40000 ALTER TABLE `forum_notification` DISABLE KEYS */;
 /*!40000 ALTER TABLE `forum_notification` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `forum_plane`
@@ -440,10 +414,8 @@ CREATE TABLE `forum_plane` (
 -- Dumping data for table `forum_plane`
 --
 
-LOCK TABLES `forum_plane` WRITE;
 /*!40000 ALTER TABLE `forum_plane` DISABLE KEYS */;
 /*!40000 ALTER TABLE `forum_plane` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `forum_reply`
@@ -474,10 +446,8 @@ CREATE TABLE `forum_reply` (
 -- Dumping data for table `forum_reply`
 --
 
-LOCK TABLES `forum_reply` WRITE;
 /*!40000 ALTER TABLE `forum_reply` DISABLE KEYS */;
 /*!40000 ALTER TABLE `forum_reply` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `forum_topic`
@@ -516,10 +486,8 @@ CREATE TABLE `forum_topic` (
 -- Dumping data for table `forum_topic`
 --
 
-LOCK TABLES `forum_topic` WRITE;
 /*!40000 ALTER TABLE `forum_topic` DISABLE KEYS */;
 /*!40000 ALTER TABLE `forum_topic` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `forum_transaction`
@@ -554,10 +522,8 @@ CREATE TABLE `forum_transaction` (
 -- Dumping data for table `forum_transaction`
 --
 
-LOCK TABLES `forum_transaction` WRITE;
 /*!40000 ALTER TABLE `forum_transaction` DISABLE KEYS */;
 /*!40000 ALTER TABLE `forum_transaction` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `forum_vote`
@@ -591,10 +557,8 @@ CREATE TABLE `forum_vote` (
 -- Dumping data for table `forum_vote`
 --
 
-LOCK TABLES `forum_vote` WRITE;
 /*!40000 ALTER TABLE `forum_vote` DISABLE KEYS */;
 /*!40000 ALTER TABLE `forum_vote` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

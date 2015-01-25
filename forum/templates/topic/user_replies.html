@@ -48,7 +48,7 @@
     <div class="usercard container-box">
         <div class="ui-header">
             <a href="/u/{{ user_info.username }}/">
-                <img src="/static/avatar/m_{% if user_info.avatar %}{{ user_info.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
+                <img src="{% if user_info.avatar %}{{ user_info.avatar }}?imageView2/0/w/48/h/48{% else %}/static/avatar/m_default.png{% endif %}" alt="" class="avatar" />
             </a>
             <div class="username">{{ user_info.username }}</div>
             <div class="website"><a href="{% if user_info.website %}{{ user_info.website }}{% endif %}">{% if user_info.website %}{{ user_info.website }}{% endif %}</a></div>

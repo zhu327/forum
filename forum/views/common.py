@@ -1,9 +1,9 @@
 # coding: utf-8
 
 import re
-from django.core.mail import EmailMultiAlternatives
 from django.http import Http404
 from django.conf import settings
+from sae.mail import EmailMessage
 
 
 def method_splitter(request, *args, **kwargs):
@@ -16,9 +16,13 @@ def method_splitter(request, *args, **kwargs):
     raise Http404
 
 def sendmail(title, content, to):
-    msg = EmailMultiAlternatives(title, content, settings.DEFAULT_FROM_EMAIL, [to])
-    msg.attach_alternative(content, 'text/html')
-    msg.send()
+    m = EmailMessage()
+    m.to = to
+    m.subject = title
+    m.html = content
+    m.smtp = (settings.EMAIL_HOST, settings.EMAIL_PORT,
+        settings.DEFAULT_FROM_EMAIL, settings.EMAIL_HOST_PASSWORD, False)
+    m.send()
 
 
 def find_mentions(content):

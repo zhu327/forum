@@ -24,7 +24,7 @@
             {% for notification in notifications %}
                 <div class="notification-item">
                     <a href="/u/{{ notification.trigger_user.username }}/">
-                        <img src="/static/avatar/m_{% if notification.trigger_user.avatar %}{{ notification.trigger_user.avatar }}{% else %}default.png{% endif %}" alt="" class="avatar" />
+                        <img src="{% if notification.trigger_user.avatar %}{{ notification.trigger_user.avatar }}?imageView2/0/w/48/h/48{% else %}/static/avatar/m_default.png{% endif %}" alt="" class="avatar" />
                     </a>
                     <div class="main">
                         {% ifequal notification.involved_type 0 %}
@@ -60,7 +60,7 @@
         <div class="usercard container-box">
             <div class="ui-header">
                 <a href="/u/{{ user.username }}/">
-                    <img src="/static/avatar/m_{% if user.avatar %}{{ user.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
+                    <img src="{% if user.avatar %}{{ user.avatar }}?imageView2/0/w/48/h/48{% else %}/static/avatar/m_default.png{% endif %}" alt="" class="avatar" />
                 </a>
                 <div class="username">{{ user.username }}</div>
                 <div class="website"><a href="{% if user.website %}{{ user.website }}{% endif %}">{% if user.website %}{{ user.website }}{% endif %}</a></div>

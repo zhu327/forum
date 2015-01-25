@@ -127,7 +127,7 @@
                     {% if user.is_authenticated %}
                         <li>
                             <a href="/u/{% if user.username %}{{ user.username }}{% else %}{{ user.id }}{% endif %}/" class="avatar">
-                                <img src="/static/avatar/s_{% if user.avatar %}{{ user.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" width="20" height="20">
+                                <img src="{% if user.avatar %}{{ user.avatar }}?imageView2/0/w/32/h/32{% else %}/static/avatar/s_default.png{% endif %}" width="20" height="20">
                             </a>
                         </li>
                         <li><a href="/u/{% if user.username %}{{ user.username }}{% else %}{{ user.id }}{% endif %}/">{{ user.username }}</a></li>

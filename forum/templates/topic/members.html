@@ -14,7 +14,7 @@
             {% for member in active_members %}
                 <div class="member">
                     <a href="/u/{{ member.username }}/">
-                        <img src="/static/avatar/m_{% if member.avatar %}{{ member.avatar }}{% else %}default.png{% endif %}" alt="" class="avatar" />
+                        <img src="{% if member.avatar %}{{ member.avatar }}?imageView2/0/w/48/h/48{% else %}/static/avatar/m_default.png{% endif %}" alt="" class="avatar" />
                     </a>
                     <span class="username">
                         <a href="/u/{{ member.username }}/">{{ member.username }}</a>
@@ -32,7 +32,7 @@
             {% for member in members %}
                 <div class="member">
                     <a href="/u/{{ member.username }}/">
-                        <img src="/static/avatar/m_{% if member.avatar %}{{ member.avatar }}{% else %}default.png{% endif %}" alt="" class="avatar" />
+                        <img src="{% if member.avatar %}{{ member.avatar }}?imageView2/0/w/48/h/48{% else %}/static/avatar/m_default.png{% endif %}" alt="" class="avatar" />
                     </a>
                     <span class="username">
                         <a href="/u/{{ member.username }}/">{{ member.username }}</a>
@@ -48,7 +48,7 @@
         <div class="usercard container-box">
             <div class="ui-header">
                 <a href="/u/{{ user.username }}/">
-                    <img src="/static/avatar/m_{% if user.avatar %}{{ user.avatar }}{% else %}default.png{% endif %}?t={% gen_random %}" alt="" class="avatar" />
+                    <img src="{% if user.avatar %}{{ user.avatar }}?imageView2/0/w/48/h/48{% else %}/static/avatar/m_default.png{% endif %}" alt="" class="avatar" />
                 </a>
                 <div class="username">{{ user.username }}</div>
                 <div class="website"><a href="{% if user.website %}{{ user.website }}{% endif %}">{% if user.website %}{{ user.website }}{% endif %}</a></div>
