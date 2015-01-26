@@ -52,7 +52,7 @@ def get_view(request, topic_id, errors=None):
             'favorites': user.fav_user.all().count()
         }
         notifications_count = user.notify_user.filter(status=0).count()
-        topic_favorited = Favorite.objects.filter(involved_topic=topic, owner_user=user)
+        topic_favorited = Favorite.objects.filter(involved_topic=topic, owner_user=user).exists()
 
     reply_num = 106
     reply_count = topic.reply_count
@@ -101,6 +101,7 @@ def post_view(request, topic_id):
     reply.save()
     Topic.objects.filter(pk=topic.id).update(last_replied_by=user, last_replied_time=now, last_touched=now)
 
+    notifications = []
     if user.id != topic.author.id:
         notification = Notification(
             content = form.cleaned_data.get('content'),
@@ -111,7 +112,7 @@ def post_view(request, topic_id):
             trigger_user = user,
             occurrence_time = now,
         )
-        notification.save()
+        notifications.append(notification)
 
     mentions = find_mentions(form.cleaned_data.get('content'))
     if user.username in mentions:
@@ -131,7 +132,9 @@ def post_view(request, topic_id):
                     trigger_user = user,
                     occurrence_time = now,
                 )
-                notification.save()
+                notifications.append(notification)
+    if notifications:
+        Notification.objects.bulk_create(notifications)
 
     if user.id != topic.author.id:
         topic_time_diff = timezone.now() - topic.created
@@ -443,12 +446,7 @@ def get_vote(request):
             'message': 'can_not_vote_your_topic'
         }), content_type='application/json')
 
-    try:
-        vote = Vote.objects.get(trigger_user=user, involved_topic=topic)
-    except Vote.DoesNotExist:
-        vote = None
-
-    if vote:
+    if Vote.objects.filter(trigger_user=user, involved_topic=topic).exists():
         return HttpResponse(json.dumps({
             'success': 0,
             'message': 'already_voted'
@@ -501,12 +499,7 @@ def get_favorite(request):
             'message': 'can_not_favorite_your_topic'
         }), content_type='application/json')
 
-    try:
-        favorite = Favorite.objects.get(owner_user=user, involved_topic=topic)
-    except Favorite.DoesNotExist:
-        favorite = None
-
-    if favorite:
+    if Favorite.objects.filter(owner_user=user, involved_topic=topic).exists():
         return HttpResponse(json.dumps({
             'success': 0,
             'message': 'already_favorited'
