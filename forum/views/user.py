@@ -1,6 +1,6 @@
 # coding: utf-8
 
-import os, uuid, copy, StringIO, urllib
+import os, uuid, copy, urllib
 from PIL import Image
 from django.shortcuts import render_to_response, redirect
 from django.contrib import auth
@@ -50,9 +50,7 @@ def post_setting_avatar(request):
 
     user = request.user
     avatar_name = '%s' % uuid.uuid5(uuid.NAMESPACE_DNS, str(user.id))
-    avatar_raw = request.FILES['avatar'].read()
-    avatar_buffer = StringIO.StringIO(avatar_raw)
-    avatar = Image.open(avatar_buffer)
+    avatar = Image.open(request.FILES['avatar'])
 
     # crop avatar if it's not square
     avatar_w, avatar_h = avatar.size
