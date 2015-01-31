@@ -81,11 +81,11 @@ def post_view(request, topic_id):
 
     user = request.user
     try:
-        last_reply = topic.reply_set.select_related('author').all().order_by('-created')[0]
+        last_reply = topic.reply_set.all().order_by('-created')[0]
     except IndexError:
         last_reply = None
     if last_reply:
-        last_replied_fingerprint = hashlib.sha1(str(topic.id) + str(last_reply.author.id) + last_reply.content).hexdigest()
+        last_replied_fingerprint = hashlib.sha1(str(topic.id) + str(last_reply.author_id) + last_reply.content).hexdigest()
         new_replied_fingerprint = hashlib.sha1(str(topic.id) + str(user.id) + form.cleaned_data.get('content')).hexdigest()
         if last_replied_fingerprint == new_replied_fingerprint:
             errors = {'duplicated_reply': [u'回复重复提交']}
@@ -171,13 +171,13 @@ def post_create(request, slug=None):
 
     user = request.user
     try:
-        last_created = user.topic_author.select_related('node').all().order_by('-created')[0]
+        last_created = user.topic_author.all().order_by('-created')[0]
     except IndexError:
         last_created = None
 
     if last_created: # 如果用户最后一篇的标题内容与提交的相同
         last_created_fingerprint = hashlib.sha1(last_created.title + \
-            last_created.content + str(last_created.node.id)).hexdigest()
+            last_created.content + str(last_created.node_id)).hexdigest()
         new_created_fingerprint = hashlib.sha1(form.cleaned_data.get('title') + \
             form.cleaned_data.get('content') + str(node.id)).hexdigest()
 
@@ -224,17 +224,14 @@ def get_edit(request, topic_id, errors=None):
 
 @login_required
 def post_edit(request, topic_id):
-    try:
-        topic = Topic.objects.select_related('author').get(pk=topic_id)
-    except Topic.DoesNotExist:
-        raise Http404
+    topic = get_object_or_404(Topic, pk=topic_id)
 
     form = CreateForm(request.POST)
     if not form.is_valid():
         return get_edit(request, topic_id, errors=form.errors)
 
     user = request.user
-    if topic.author.id != user.id:
+    if topic.author_id != user.id:
         errors = {'invalid_permission': [u'没有权限修改该主题']}
         return get_edit(request, topic_id, errors=errors)
 
@@ -266,17 +263,14 @@ def get_reply_edit(request, reply_id, errors=None):
 
 @login_required
 def post_reply_edit(request, reply_id):
-    try:
-        reply = Reply.objects.select_related('author').get(pk=reply_id)
-    except Reply.DoesNotExist:
-        raise Http404
+    reply = get_object_or_404(Reply, pk=reply_id)
 
     form = ReplyForm(request.POST)
     if not form.is_valid():
         return get_reply_edit(request, reply_id, errors=form.errors)
 
     user = request.user
-    if reply.author.id != user.id:
+    if reply.author_id != user.id:
         errors = {'invalid_permission': [u'没有权限修改该回复']}
         return get_reply_edit(request, reply_id, errors=errors)
 
