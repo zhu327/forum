@@ -30,7 +30,11 @@ def get_index(request):
         'replies': Reply.objects.all().count(),
     }
 
-    current_page = int(request.GET.get('p', '1'))
+    try:
+        current_page = int(request.GET.get('p', '1'))
+    except ValueError:
+        current_page = 1
+
     topics, topic_page = Topic.objects.get_all_topic(current_page=current_page)
     planes = Plane.objects.all().prefetch_related('node_set')
     hot_nodes = Node.objects.get_all_hot_nodes()
@@ -57,7 +61,11 @@ def get_view(request, topic_id, errors=None):
     reply_num = 106
     reply_count = topic.reply_count
     reply_last_page = (reply_count // reply_num + (reply_count % reply_num and 1)) or 1
-    current_page = int(request.GET.get('p', reply_last_page))
+    try:
+        current_page = int(request.GET.get('p', reply_last_page))
+    except ValueError:
+        current_page = reply_last_page
+
     replies, reply_page = Reply.objects.get_all_replies_by_topic_id(topic.id, current_page=current_page, num = reply_num)
     active_page = 'topic'
     floor = reply_num * (current_page - 1)
@@ -296,7 +304,10 @@ def get_node_topics(request, slug):
         }
         notifications_count = user.notify_user.filter(status=0).count()
 
-    current_page = int(request.GET.get('p', '1'))
+    try:
+        current_page = int(request.GET.get('p', '1'))
+    except ValueError:
+        current_page = 1
 
     topics, topic_page = Topic.objects.get_all_topics_by_node_slug(node_slug=slug, current_page=current_page)
     active_page = 'topic'
@@ -313,7 +324,11 @@ def get_user_topics(request, uid):
     except ForumUser.DoesNotExist:
         raise Http404
 
-    current_page = int(request.GET.get('p', '1'))
+    try:
+        current_page = int(request.GET.get('p', '1'))
+    except ValueError:
+        current_page = 1
+
     counter = {
         'topics': user_info.topic_author.all().count(),
         'replies': user_info.reply_author.all().count(),
@@ -339,7 +354,11 @@ def get_user_replies(request, uid):
     except ForumUser.DoesNotExist:
         raise Http404
 
-    current_page = int(request.GET.get('p', '1'))
+    try:
+        current_page = int(request.GET.get('p', '1'))
+    except ValueError:
+        current_page = 1
+
     counter = {
         'topics': user_info.topic_author.all().count(),
         'replies': user_info.reply_author.all().count(),
@@ -365,7 +384,11 @@ def get_user_favorites(request, uid):
     except ForumUser.DoesNotExist:
         raise Http404
 
-    current_page = int(request.GET.get('p', '1'))
+    try:
+        current_page = int(request.GET.get('p', '1'))
+    except ValueError:
+        current_page = 1
+
     counter = {
         'topics': user_info.topic_author.all().count(),
         'replies': user_info.reply_author.all().count(),
@@ -391,7 +414,11 @@ def get_profile(request, uid):
     except ForumUser.DoesNotExist:
         raise Http404
 
-    current_page = int(request.GET.get('p', '1'))
+    try:
+        current_page = int(request.GET.get('p', '1'))
+    except ValueError:
+        current_page = 1
+
     counter = {
         'topics': user_info.topic_author.all().count(),
         'replies': user_info.reply_author.all().count(),
@@ -419,7 +446,7 @@ def get_vote(request):
 
     try:
         topic_id = int(request.GET.get('topic_id'))
-    except TypeError:
+    except (TypeError, ValueError):
         topic_id = None
     topic = None
     if topic_id:
@@ -472,7 +499,7 @@ def get_favorite(request):
 
     try:
         topic_id = int(request.GET.get('topic_id'))
-    except TypeError:
+    except (TypeError, ValueError):
         topic_id = None
     topic = None
     if topic_id:
@@ -524,7 +551,7 @@ def get_cancel_favorite(request):
 
     try:
         topic_id = int(request.GET.get('topic_id'))
-    except TypeError:
+    except (TypeError, ValueError):
         topic_id = None
     topic = None
     if topic_id:
