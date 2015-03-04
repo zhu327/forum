@@ -289,7 +289,7 @@ def post_reply_edit(request, reply_id):
     reputation = 0 if reputation < 0 else reputation
     ForumUser.objects.filter(pk=user.id).update(reputation=reputation)
 
-    return redirect('/t/%s/' % reply.topic.id)
+    return redirect('/t/%s/' % reply.topic_id)
 
 
 def get_node_topics(request, slug):
