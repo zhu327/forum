@@ -123,3 +123,18 @@ version: 1
 ```
 
 SVN上传即可.
+
+#### 更新
+
+SAE 版本新增功能,可使用`SAE kvdb`做缓存,缓存后端使用`xp.cache.SaekvdbCache`,减少云豆消耗.  
+SAE激活kvdb并关闭`memcached`功能,修改`xp/settings.py`,`SAE kvdb`会比`memcached`慢一点,但是会便宜很多
+
+```python
+CACHES = { # memcached缓存设置
+    'default': {
+        # 'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache', # SAE使用pylibmc
+        'BACKEND': 'xp.cache.SaekvdbCache', # 可选用SAE kvdb做缓存，消耗云豆更少
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+```
