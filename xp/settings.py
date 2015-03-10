@@ -183,6 +183,7 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 上传最大10M
 CACHES = { # memcached缓存设置
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache', # SAE使用pylibmc
+        # 'BACKEND': 'xp.cache.SaekvdbCache', # 可选用SAE kvdb做缓存，消耗云豆更少
         'LOCATION': '127.0.0.1:11211',
     }
 }
