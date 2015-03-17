@@ -7,7 +7,7 @@ demo: <http://forum.sinaapp.com/>
 Django forum是使用Django实现的轻型现代论坛程序,是fork自[F2E.im](https://github.com/PaulGuo/F2E.im)的Django版本.  
 相对于原版的主要区别在于使用Django admin实现了一个简单的后台管理.
 
-Django forum有两个分支,master分支用于主机上部署,SAE分支是适配Sina App Engine的版本.
+Django forum有3个分支,master分支用于主机上部署,SAE分支是适配Sina App Engine的版本,api分支是一个试验性质的分支,详情见更新
 
 #### 安装部署
 
@@ -138,3 +138,16 @@ CACHES = { # memcached缓存设置
     }
 }
 ```
+
+增加api分支,试验性质只为学习RESTful api实现.
+
+1. 实现了一个OAuth2.0授权服务;
+2. 实现了topic的RESTful风格的api:
+   * 获取topic列表 GET /api/topics
+   * 创建topic POST /api/topics
+   * 获取单个topic GET /api/topics/:id
+   * 修改topic PUT /api/topics/:id
+   * 获取回复列表 GET /api/topics/:id/replies
+   * 创建回复 POST /api/topics/:id/replies
+
+以上api POST PUT时需要用到授权`access_token`.
