@@ -11,7 +11,7 @@ admin.site.login = login_required(admin.site.login) # 设置admin登录的页面
 
 import forum.urls
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Examples:
     # url(r'^$', 'xp.views.home', name='home'),
     # url(r'^xp/', include('xp.foo.urls')),
@@ -23,4 +23,4 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^', include(forum.urls)),
     url(r'^manage/admin/', include(admin.site.urls)),
-)
+]

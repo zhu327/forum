@@ -133,14 +133,14 @@ def post_login(request):
     auth.login(request, user)
 
     if user.is_staff:
-        return redirect(request.REQUEST.get('next', '/manage/admin/'))
+        return redirect('/manage/admin/')
 
-    return redirect(request.REQUEST.get('next', '/'))
+    return redirect('/')
 
 
 def get_logout(request):
     auth.logout(request)
-    return redirect(request.REQUEST.get('next', '/'))
+    return redirect('/')
 
 
 def get_register(request, **kwargs):

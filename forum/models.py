@@ -43,7 +43,7 @@ class NodeManager(models.Manager):
     Node objects
     '''
     def get_all_hot_nodes(self):
-        query = self.get_query_set().filter(topic__reply_count__gt=0).order_by('-topic__reply_count')
+        query = self.get_queryset().filter(topic__reply_count__gt=0).order_by('-topic__reply_count')
         query.query.group_by = ['id'] # Django使用GROUP BY方法
         return query
 
@@ -53,23 +53,24 @@ class TopicManager(models.Manager):
     Topic objects
     '''
     def get_all_topic(self, num=36, current_page=1): # 可以考虑在这里过滤掉没有头像的用户发帖，不显示在主页
-        count = self.get_query_set().count()
+        print self
+        count = self.get_queryset().count()
         page = Pages(count, current_page, num)
-        query = self.get_query_set().select_related('node', 'author', 'last_replied_by').\
+        query = self.get_queryset().select_related('node', 'author', 'last_replied_by').\
             all().order_by('-last_touched', '-created', '-last_replied_time', '-id')[page.start:page.end]
         return query, page
 
     def get_all_topics_by_node_slug(self, num = 36, current_page = 1, node_slug = None):
-        count = self.get_query_set().filter(node__slug=node_slug).count()
+        count = self.get_queryset().filter(node__slug=node_slug).count()
         page = Pages(count, current_page, num)
-        query = self.get_query_set().select_related('node', 'author', 'last_replied_by').\
+        query = self.get_queryset().select_related('node', 'author', 'last_replied_by').\
             filter(node__slug=node_slug).order_by('-last_touched', '-created', '-last_replied_time', '-id')[page.start:page.end]
         return query, page
 
     def get_user_all_topics(self, uid, num = 36, current_page = 1):
-        count = self.get_query_set().filter(author__id=uid).count()
+        count = self.get_queryset().filter(author__id=uid).count()
         page = Pages(count, current_page, num)
-        query = self.get_query_set().select_related('node', 'author', 'last_replied_by').\
+        query = self.get_queryset().select_related('node', 'author', 'last_replied_by').\
             filter(author__id=uid).order_by('-id')[page.start:page.end]
         return query, page
 
@@ -77,11 +78,11 @@ class TopicManager(models.Manager):
         pass # F2E好像写的不对，留着以后有用再说
 
     def get_topic_by_topic_id(self, topic_id):
-        query = self.get_query_set().select_related('node', 'author', 'last_replied_by').get(pk=topic_id)
+        query = self.get_queryset().select_related('node', 'author', 'last_replied_by').get(pk=topic_id)
         return query
 
     def get_user_last_created_topic(self, uid):
-        query = self.get_query_set().filter(author__id=uid).order_by('-created')[0]
+        query = self.get_queryset().filter(author__id=uid).order_by('-created')[0]
         return query
 
 
@@ -90,16 +91,16 @@ class ReplyManager(models.Manager):
     Reply objects
     '''
     def get_all_replies_by_topic_id(self, topic_id, num = 16, current_page = 1):
-        count = self.get_query_set().filter(topic__id=topic_id).count()
+        count = self.get_queryset().filter(topic__id=topic_id).count()
         page = Pages(count, current_page, num)
-        query = self.get_query_set().select_related('author').\
+        query = self.get_queryset().select_related('author').\
             filter(topic__id=topic_id).order_by('id')[page.start:page.end]
         return query, page
 
     def get_user_all_replies(self, uid, num = 16, current_page = 1):
-        count = self.get_query_set().filter(author__id=uid).count()
+        count = self.get_queryset().filter(author__id=uid).count()
         page = Pages(count, current_page, num)
-        query = self.get_query_set().select_related('topic', 'topic__author').\
+        query = self.get_queryset().select_related('topic', 'topic__author').\
             filter(author__id=uid).order_by('-id')[page.start:page.end]
         return query, page
 
@@ -109,9 +110,9 @@ class FavoriteManager(models.Manager):
     favorite objects
     '''
     def get_user_all_favorites(self, uid, num = 16, current_page = 1):
-        count = self.get_query_set().filter(owner_user__id=uid).count()
+        count = self.get_queryset().filter(owner_user__id=uid).count()
         page = Pages(count, current_page, num)
-        query = self.get_query_set().select_related('involved_topic', 'involved_topic__node', \
+        query = self.get_queryset().select_related('involved_topic', 'involved_topic__node', \
             'involved_topic__author', 'involved_topic__last_replied_by').\
             filter(owner_user__id=uid).order_by('-id')[page.start:page.end]
         return query, page
@@ -122,9 +123,9 @@ class NotificationManager(models.Manager):
     Notification objects
     '''
     def get_user_all_notifications(self, uid, num = 16, current_page = 1):
-        count = self.get_query_set().filter(involved_user__id=uid).count()
+        count = self.get_queryset().filter(involved_user__id=uid).count()
         page = Pages(count, current_page, num)
-        query = self.get_query_set().select_related('trigger_user', 'involved_topic').\
+        query = self.get_queryset().select_related('trigger_user', 'involved_topic').\
             filter(involved_user__id=uid).order_by('-id')[page.start:page.end]
         return query, page
 

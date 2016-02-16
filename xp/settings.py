@@ -2,7 +2,6 @@
 # Django settings for xp project.
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -86,13 +85,6 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'h6=yzee&jze#4p1@twhksg1wg6hv%pzwomw(!o($qsly%lzlhe'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware', # 缓存中间件，必须放在开头
     'django.middleware.common.CommonMiddleware',
@@ -110,18 +102,24 @@ ROOT_URLCONF = 'xp.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'xp.wsgi.application'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = ( # F2E中有current_user对象和request对象,这里设置可在模板中使用RquestContext
-    'django.contrib.auth.context_processors.auth', # user对象等等
-    'django.core.context_processors.request', # request对象等等
-    'django.core.context_processors.static', # 在模板中使用{{ STATIC_URL }}获取静态文件路径
-    'forum.context_processors.custom_proc', # 自定义模板上下文处理器
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth', # user对象等等
+                'django.core.context_processors.request', # request对象等等
+                'django.core.context_processors.static', # 在模板中使用{{ STATIC_URL }}获取静态文件路径
+                'forum.context_processors.custom_proc', # 自定义模板上下文处理器
+            ],
+            'loaders':[
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ]
+        },
+    },
+]
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -175,12 +173,12 @@ LOGGING = {
     }
 }
 
-CACHES = { # memcached缓存设置
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
-    }
-}
+# CACHES = { # memcached缓存设置
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#         'LOCATION': '127.0.0.1:11211',
+#     }
+# }
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache' # 使用memcached存储session
 
@@ -196,9 +194,9 @@ LOGIN_URL = '/login/'
 # 发送邮件设置
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 25
-EMAIL_HOST_USER= '*********'
-EMAIL_HOST_PASSWORD= '******'
-DEFAULT_FROM_EMAIL = '*********@qq.com'
+EMAIL_HOST_USER= 'ieiayaobb'
+EMAIL_HOST_PASSWORD= 'sbwal911'
+DEFAULT_FROM_EMAIL = 'ieiayaobb@qq.com'
 
 # 注册用户保留关键字，非Django设置
 RESERVED = ["user", "topic", "home", "setting", "forgot", "login", "logout", "register", "admin"]

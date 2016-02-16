@@ -8,7 +8,7 @@ from forum.sitemap import TopicSitemap
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = [
     # Examples:
     # url(r'^$', 'xp.views.home', name='home'),
     # url(r'^xp/', include('xp.foo.urls')),
@@ -42,4 +42,4 @@ urlpatterns = patterns('',
     url(r'^register/$', common.method_splitter, {'GET': user.get_register, 'POST': user.post_register}),
 
     url(r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': {'topics': TopicSitemap}}),
-)
+]
