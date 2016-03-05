@@ -121,5 +121,4 @@ class SaekvdbCache(BaseCache):
         return new_value
 
     def clear(self):
-        for k in self._cache.getkeys_by_prefix(''):
-            self._cache.delete(k)
+        map(self._cache.delete, self._cache.getkeys_by_prefix('', 1000))
