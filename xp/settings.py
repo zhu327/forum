@@ -150,11 +150,6 @@ LOGGING = {
         }
     },
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
@@ -162,9 +157,8 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['console'],
             'level': 'ERROR',
-            'propagate': True,
         },
         'django.db.backends': {
             'level': 'DEBUG',
@@ -180,7 +174,7 @@ LOGGING = {
 #     }
 # }
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache' # 使用memcached存储session
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache' # 使用memcached存储session
 
 # 自定义User类
 AUTH_USER_MODEL = 'forum.ForumUser'
@@ -194,9 +188,9 @@ LOGIN_URL = '/login/'
 # 发送邮件设置
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 25
-EMAIL_HOST_USER= 'ieiayaobb'
-EMAIL_HOST_PASSWORD= 'sbwal911'
-DEFAULT_FROM_EMAIL = 'ieiayaobb@qq.com'
+EMAIL_HOST_USER= '*****'
+EMAIL_HOST_PASSWORD= '*****'
+DEFAULT_FROM_EMAIL = '*****@qq.com'
 
 # 注册用户保留关键字，非Django设置
 RESERVED = ["user", "topic", "home", "setting", "forgot", "login", "logout", "register", "admin"]

@@ -53,7 +53,6 @@ class TopicManager(models.Manager):
     Topic objects
     '''
     def get_all_topic(self, num=36, current_page=1): # 可以考虑在这里过滤掉没有头像的用户发帖，不显示在主页
-        print self
         count = self.get_queryset().count()
         page = Pages(count, current_page, num)
         query = self.get_queryset().select_related('node', 'author', 'last_replied_by').\
