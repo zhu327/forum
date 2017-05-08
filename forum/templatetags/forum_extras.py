@@ -142,7 +142,7 @@ def content_process(content): #内容处理，把gist，微博图片什么的替
 def markdown_up(content): # 转为markdown
     if not content:
         return ''
-    return markdown(content, extensions = ['codehilite', 'fenced_code', 'mathjax'], safe_mode = 'escape')
+    return markdown(content, extensions = ['codehilite', 'fenced_code'], safe_mode = 'escape')
 
 
 @register.filter(name='email_mosaic')

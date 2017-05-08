@@ -252,7 +252,7 @@ DROP TABLE IF EXISTS `forum_forumuser`;
 CREATE TABLE `forum_forumuser` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `password` varchar(128) NOT NULL,
-  `last_login` datetime NOT NULL,
+  `last_login` datetime DEFAULT NULL,
   `is_superuser` tinyint(1) NOT NULL,
   `username` varchar(30) NOT NULL,
   `first_name` varchar(30) NOT NULL,
