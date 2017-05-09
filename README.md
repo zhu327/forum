@@ -2,8 +2,6 @@
 
 ***
 
-demo: <https://x-devz.rhcloud.com/>
-
 Django forum是使用Django实现的轻型现代论坛程序,是fork自[F2E.im](https://github.com/PaulGuo/F2E.im)的Django版本.  
 相对于原版的主要区别在于使用Django admin实现了一个简单的后台管理.
 
